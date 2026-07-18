@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "almirahcollective.com",
       },
+      {
+        protocol: "https",
+        hostname: "zscukxpafikmszrqwodc.supabase.co",
+      },
     ],
   },
 };
