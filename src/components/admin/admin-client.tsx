@@ -725,7 +725,7 @@ export function AdminClient({
                     contentStyle={{ backgroundColor: '#0d0d0d', border: '1px solid rgba(242, 227, 198, 0.2)' }}
                     itemStyle={{ color: '#f2e3c6' }}
                     labelStyle={{ color: '#888888', marginBottom: '4px' }}
-                    formatter={(value: number) => [formatCurrency(value), 'Revenue']}
+                    formatter={(value: any) => [formatCurrency(value || 0), 'Revenue']}
                   />
                   <Area type="monotone" dataKey="value" stroke="#f2e3c6" fillOpacity={1} fill="url(#colorValue)" />
                 </AreaChart>
