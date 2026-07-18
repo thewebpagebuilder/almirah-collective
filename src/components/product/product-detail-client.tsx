@@ -251,7 +251,7 @@ export function ProductDetailClient({
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
               {product.sizes.map((s) => {
-                const isAvailable = (product.stockBySize[s] || 0) > 0;
+                const isAvailable = ((product.stockBySize || {})[s] || 0) > 0;
                 return (
                 <button
                   key={s}

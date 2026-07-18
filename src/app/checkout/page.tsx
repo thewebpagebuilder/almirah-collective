@@ -94,7 +94,7 @@ export default function CheckoutPage() {
   function handlePaymentSuccess() {
     setShowPayment(false);
     clearCart();
-    router.push(`/checkout/success?order=`);
+    router.push(`/checkout/success?order=${pendingOrder || ""}`);
   }
 
   function handlePaymentClose() {

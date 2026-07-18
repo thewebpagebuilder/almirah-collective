@@ -19,7 +19,7 @@ import { TrustBadges } from "@/components/home/trust-badges";
 import { ProductCard } from "@/components/product/product-card";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const OCCASION_ICONS: Record<string, string> = {
   briefcase: "💼",

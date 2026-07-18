@@ -42,6 +42,7 @@ type Product = {
   price: string;
   compareAtPrice?: string | null;
   categorySlug: string;
+  images: string[];
 };
 
 type Lead = {
@@ -254,6 +255,35 @@ export function AdminClient({
     if (!res.ok) return setMessage("Failed to update stock");
     setMessage("Inventory updated");
     startTransition(() => router.refresh());
+  }
+
+  async function uploadProductImage(id: number, currentImages: string[], e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setMessage("Uploading image...");
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const uploadRes = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!uploadRes.ok) return setMessage("Failed to upload image");
+      const { url } = await uploadRes.json();
+      
+      const newImages = [url, ...currentImages];
+      const res = await fetch("/api/admin/inventory", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, images: newImages }),
+      });
+      if (!res.ok) return setMessage("Failed to update product images");
+      
+      setMessage("Image updated successfully");
+      startTransition(() => router.refresh());
+    } catch (err) {
+      setMessage("An error occurred during upload");
+    }
   }
   
   async function createProduct(e: React.FormEvent) {
@@ -540,6 +570,12 @@ export function AdminClient({
                       <td className="px-4 py-3 align-top max-w-[200px]">
                         <p className="line-clamp-2">{p.name}</p>
                         <p className="text-[10px] text-champagne mt-1">Total Stock: {p.stock}</p>
+                        <div className="mt-3">
+                          <label className="cursor-pointer border border-pearl/20 px-2 py-1 text-[9px] uppercase tracking-widest text-pearl/50 hover:bg-pearl/5">
+                            Upload Image
+                            <input type="file" accept="image/*" className="hidden" onChange={(e) => uploadProductImage(p.id, p.images || [], e)} />
+                          </label>
+                        </div>
                       </td>
                       <td className="px-4 py-3 align-top capitalize text-pearl/60">
                         {p.categorySlug.replace(/-/g, " ")}

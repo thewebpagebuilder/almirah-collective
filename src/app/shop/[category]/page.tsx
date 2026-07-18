@@ -8,7 +8,7 @@ import { ensureSeeded } from "@/lib/seed";
 import { CATEGORIES } from "@/lib/catalog";
 import { ProductCard } from "@/components/product/product-card";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 type Props = { params: Promise<{ category: string }> };
 

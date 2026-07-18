@@ -27,6 +27,7 @@ export async function PATCH(request: Request) {
     
     if (body.price !== undefined) updates.price = String(body.price);
     if (body.compareAtPrice !== undefined) updates.compareAtPrice = body.compareAtPrice ? String(body.compareAtPrice) : null;
+    if ((body as any).images !== undefined) updates.images = (body as any).images;
 
     const [updated] = await db
       .update(products)

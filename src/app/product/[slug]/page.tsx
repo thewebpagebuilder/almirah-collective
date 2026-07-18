@@ -6,7 +6,7 @@ import { products, reviews } from "@/db/schema";
 import { ensureSeeded } from "@/lib/seed";
 import { ProductDetailClient } from "@/components/product/product-detail-client";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 type Props = { params: Promise<{ slug: string }> };
 
