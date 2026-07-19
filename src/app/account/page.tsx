@@ -7,6 +7,8 @@ import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import type { User } from "@supabase/supabase-js";
+import Link from "next/link";
+import { PRODUCTS } from "@/lib/catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +20,15 @@ type AccountOrder = {
   total?: string | number;
   createdAt?: Date | string;
   created_at?: Date | string;
+  items?: {
+    productId?: number;
+    productName?: string;
+    productImage?: string;
+    size?: string;
+    color?: string;
+    quantity?: number;
+    unitPrice?: string | number;
+  }[];
 };
 
 function AccountContent({ user }: { user: User }) {
@@ -125,12 +136,45 @@ function AccountContent({ user }: { user: User }) {
                   const date = order.createdAt ?? order.created_at ?? new Date();
                   return (
                     <tr key={order.id} className="border-t border-obsidian/8">
-                      <td className="px-4 py-4 font-medium">{orderNumber}</td>
-                      <td className="px-4 py-4 text-obsidian/60">{formatDate(date)}</td>
-                      <td className="px-4 py-4 capitalize">
+                      <td className="px-4 py-4 align-top">
+                        <div className="font-medium text-obsidian mb-4">{orderNumber}</div>
+                        <div className="space-y-4">
+                          {order.items?.map((item, idx) => {
+                            const product = PRODUCTS.find((p) => p.name === item.productName);
+                            const slug = product?.slug || "#";
+                            return (
+                              <div key={idx} className="flex items-center gap-3">
+                                {item.productImage && (
+                                  <div className="h-12 w-10 shrink-0 overflow-hidden bg-beige">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                      src={item.productImage}
+                                      alt={item.productName ?? "Product"}
+                                      className="h-full w-full object-cover"
+                                    />
+                                  </div>
+                                )}
+                                <div>
+                                  <Link
+                                    href={slug !== "#" ? `/product/${slug}` : "#"}
+                                    className="font-medium text-obsidian hover:underline line-clamp-1"
+                                  >
+                                    {item.productName}
+                                  </Link>
+                                  <p className="text-[11px] text-obsidian/60 mt-0.5">
+                                    {[item.color, item.size, `Qty ${item.quantity ?? 1}`].filter(Boolean).join(" · ")}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-obsidian/60 align-top">{formatDate(date)}</td>
+                      <td className="px-4 py-4 capitalize align-top">
                         {(order.status ?? "processed").replace(/_/g, " ")}
                       </td>
-                      <td className="px-4 py-4">{formatCurrency(order.total ?? 0)}</td>
+                      <td className="px-4 py-4 align-top">{formatCurrency(Number(order.total ?? 0))}</td>
                     </tr>
                   );
                 })}

@@ -63,7 +63,7 @@ export function ProductDetailClient({
 }) {
   const { addItem } = useCart();
   const [activeImage, setActiveImage] = useState(0);
-  const [color, setColor] = useState(product.colors[0]?.name ?? "");
+
   const [size, setSize] = useState(product.sizes[0] ?? "");
   const [view360, setView360] = useState(false);
   const [sizeGuide, setSizeGuide] = useState(false);
@@ -86,7 +86,6 @@ export function ProductDetailClient({
       price,
       image: product.images[0],
       size,
-      color,
     });
   }
 
@@ -209,31 +208,6 @@ export function ProductDetailClient({
             dangerouslySetInnerHTML={{ __html: product.description }}
           />
 
-          {/* Colors */}
-          {product.colors.length > 0 && (
-            <div className="mt-8">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-obsidian/50">
-                Color — {color}
-              </p>
-              <div className="mt-3 flex gap-2">
-                {product.colors.map((c) => (
-                  <button
-                    key={c.name}
-                    type="button"
-                    onClick={() => setColor(c.name)}
-                    aria-label={c.name}
-                    className={cn(
-                      "h-9 w-9 rounded-full border-2 transition",
-                      color === c.name
-                        ? "border-obsidian scale-110"
-                        : "border-transparent",
-                    )}
-                    style={{ backgroundColor: c.hex }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Sizes */}
           <div className="mt-7">

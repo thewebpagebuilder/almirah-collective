@@ -106,7 +106,7 @@ export function CartDrawer() {
                           {item.name}
                         </Link>
                         <p className="mt-1 text-xs text-obsidian/50">
-                          {[item.color, item.size].filter(Boolean).join(" · ")}
+                          {[item.size].filter(Boolean).join(" · ")}
                         </p>
                       </div>
                       <button
