@@ -149,6 +149,7 @@ export default async function AdminPage() {
         stockBySize: p.stockBySize,
         price: p.price,
         categorySlug: p.categorySlug,
+        images: p.images,
       }))}
       leads={allLeads}
       complaints={allComplaints}
