@@ -1147,7 +1147,7 @@ export const LOOKBOOK = [
   {
     title: "City Ease",
     productSlug: "w-ice-blue-embroidered-anarkali-festive-wear",
-    image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_54_0.png",
+    image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_31_0.png",
   },
   {
     title: "Festive Thread",
