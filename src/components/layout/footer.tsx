@@ -71,7 +71,7 @@ export function Footer() {
         </div>
 
         <div>
-          <p className="text-[10px] uppercase tracking-[0.25em] text-champagne">Concierge</p>
+          <p className="text-[10px] uppercase tracking-[0.25em] text-champagne">Contact Us</p>
           <ul className="mt-5 space-y-2.5 text-sm text-pearl/70">
             <li>
               <a href={`mailto:${BRAND.email}`} className="hover:text-pearl">
@@ -90,7 +90,7 @@ export function Footer() {
                 rel="noreferrer"
                 className="hover:text-pearl"
               >
-                WhatsApp Concierge
+                Connect on WhatsApp
               </a>
             </li>
             <li className="pt-2 leading-relaxed text-pearl/50">{BRAND.address}</li>

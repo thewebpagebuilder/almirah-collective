@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({
-      message: "Message received. Our concierge will respond within 24 hours.",
+      message: "Message received. Our team will respond within 24 hours.",
     });
   } catch {
     return NextResponse.json({ error: "Unable to send message" }, { status: 500 });

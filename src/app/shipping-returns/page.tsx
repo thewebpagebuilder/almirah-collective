@@ -79,7 +79,7 @@ export default function ShippingReturnsPage() {
             <a href={`mailto:${BRAND.email}`} className="text-champagne-dark">
               {BRAND.email}
             </a>{" "}
-            · {BRAND.phone} · WhatsApp concierge
+            · {BRAND.phone} · Connect on WhatsApp
           </p>
         </section>
       </div>

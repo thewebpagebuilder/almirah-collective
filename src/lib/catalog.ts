@@ -3,7 +3,7 @@ import type { CatalogProduct } from "./types";
 export const BRAND = {
   name: "Almirah Collective",
   tagline: "Understated luxe looks, everyday",
-  email: "amesarka@gmail.com",
+  email: "almirahcollective@gmail.com",
   phone: "+91 89713 27304",
   whatsapp: "+918971327304",
   address: "Bengaluru, India",

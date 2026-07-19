@@ -43,7 +43,7 @@ export default function ContactPage() {
     <div className="mx-auto max-w-[1440px] px-5 pb-24 pt-32 md:pt-36 md:px-8">
       <div className="max-w-2xl">
         <p className="text-[10px] uppercase tracking-[0.3em] text-champagne-dark">
-          Concierge
+          Contact Us
         </p>
         <h1 className="mt-3 font-serif text-3xl md:text-4xl lg:text-5xl">Contact Us</h1>
         <p className="mt-4 text-sm leading-relaxed text-obsidian/60">
