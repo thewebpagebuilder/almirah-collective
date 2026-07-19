@@ -20,14 +20,14 @@ type AccountOrder = {
   total?: string | number;
   createdAt?: Date | string;
   created_at?: Date | string;
-  items?: {
-    productId?: number;
-    productName?: string;
-    productImage?: string;
+  order_items?: {
+    product_id?: number;
+    product_name?: string;
+    product_image?: string;
     size?: string;
     color?: string;
     quantity?: number;
-    unitPrice?: string | number;
+    unit_price?: string | number;
   }[];
 };
 
@@ -41,7 +41,7 @@ function AccountContent({ user }: { user: User }) {
       try {
         const { data, error } = await supabase
           .from("orders")
-          .select("*")
+          .select("*, order_items(*)")
           .eq("customer_email", user.email ?? "")
           .order("created_at", { ascending: false });
 
@@ -139,17 +139,19 @@ function AccountContent({ user }: { user: User }) {
                       <td className="px-4 py-4 align-top">
                         <div className="font-medium text-obsidian mb-4">{orderNumber}</div>
                         <div className="space-y-4">
-                          {order.items?.map((item, idx) => {
-                            const product = PRODUCTS.find((p) => p.name === item.productName);
+                          {order.order_items?.map((item, idx) => {
+                            const productName = item.product_name ?? "Unknown Product";
+                            const productImage = item.product_image;
+                            const product = PRODUCTS.find((p) => p.name === productName);
                             const slug = product?.slug || "#";
                             return (
                               <div key={idx} className="flex items-center gap-3">
-                                {item.productImage && (
+                                {productImage && (
                                   <div className="h-12 w-10 shrink-0 overflow-hidden bg-beige">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
-                                      src={item.productImage}
-                                      alt={item.productName ?? "Product"}
+                                      src={productImage}
+                                      alt={productName}
                                       className="h-full w-full object-cover"
                                     />
                                   </div>
@@ -159,7 +161,7 @@ function AccountContent({ user }: { user: User }) {
                                     href={slug !== "#" ? `/product/${slug}` : "#"}
                                     className="font-medium text-obsidian hover:underline line-clamp-1"
                                   >
-                                    {item.productName}
+                                    {productName}
                                   </Link>
                                   <p className="text-[11px] text-obsidian/60 mt-0.5">
                                     {[item.color, item.size, `Qty ${item.quantity ?? 1}`].filter(Boolean).join(" · ")}
