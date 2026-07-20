@@ -127,7 +127,7 @@ export function Header() {
                     </Link>
                     <Link href="/lookbook" className="relative flex-1 group overflow-hidden">
                       <div className="absolute inset-0 bg-obsidian/10 group-hover:bg-transparent transition-colors z-10" />
-                      <img src="https://images.unsplash.com/photo-1550614000-4b95d4ebfa84?q=80&w=600&auto=format&fit=crop" alt="Lookbook" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                      <img src="https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_8_0.png" alt="Lookbook" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                       <div className="absolute bottom-3 left-3 z-20">
                         <p className="text-pearl text-xs uppercase tracking-widest font-medium">Lookbook</p>
                       </div>
