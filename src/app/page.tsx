@@ -69,12 +69,12 @@ export default async function HomePage() {
           },
         ];
 
-  // Build animated hero slideshow: use the requested 4 product images or fallbacks
-  const heroSlides = allProducts.slice(0, 4).map((p) => ({
-    src: p.images[0],
-    alt: p.name,
-    category: p.categorySlug.replace("-", " "),
-  }));
+  const heroSlides = [
+    { src: "/images/home/slide_1.jpg", alt: "Active Wear", category: "Active Wear" },
+    { src: "/images/home/slide_2.jpg", alt: "Women's Wear", category: "Women's Wear" },
+    { src: "/images/home/slide_3.jpg", alt: "Men's Wear", category: "Men's Wear" },
+    { src: "/images/home/slide_4.jpg", alt: "Accessories", category: "Accessories" }
+  ];
 
   const brandCount = BRAND.brandsCarried.length;
 
