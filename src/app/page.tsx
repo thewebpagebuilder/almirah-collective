@@ -89,7 +89,10 @@ export default async function HomePage() {
               <Sparkles className="h-3 w-3" />
               Handpicked in Bengaluru
             </div>
-            <h1 className="mt-5 max-w-xl text-balance font-serif text-[clamp(2rem,5vw,4.5rem)] leading-[0.96] text-obsidian">
+            <div className="mb-4 mt-8">
+              <img src="/images/logo.png" alt="Almirah Collective Logo" className="h-20 w-auto object-contain mix-blend-multiply" />
+            </div>
+            <h1 className="mt-4 max-w-xl text-balance font-serif text-[clamp(2rem,5vw,4.5rem)] leading-[0.96] text-obsidian">
               Understated luxe looks,{" "}
               <span className="italic text-champagne-dark">everyday</span>.
             </h1>
@@ -176,37 +179,79 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="grid auto-rows-[220px] grid-cols-2 gap-3 md:auto-rows-[280px] md:grid-cols-4 md:gap-4 lg:auto-rows-[320px]">
-          {CATEGORIES.slice(0, 6).map((cat, i) => {
-            const span =
-              i === 0
-                ? "md:col-span-2 md:row-span-2"
-                : i === 3
-                  ? "md:col-span-2"
-                  : "";
-            return (
-              <Link
-                key={cat.slug}
-                href={`/shop/${cat.slug}`}
-                className={`group relative overflow-hidden bg-beige ${span}`}
-              >
-                <Image
-                  src={cat.image}
-                  alt={cat.name}
-                  fill
-                  sizes="(max-width:768px) 50vw, 40vw"
-                  className="object-cover transition duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-obsidian/75 via-obsidian/15 to-transparent opacity-85 transition group-hover:opacity-95" />
-                <div className="absolute inset-x-0 bottom-0 p-5 md:p-7">
-                  <p className="font-serif text-2xl text-pearl md:text-3xl">{cat.name}</p>
-                  <p className="mt-1 max-w-xs text-xs text-pearl/70 opacity-0 transition duration-500 group-hover:opacity-100 md:text-sm">
-                    {cat.description}
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
+        <div className="grid auto-rows-[220px] grid-cols-2 gap-3 md:auto-rows-[300px] md:grid-cols-3 md:gap-4 lg:auto-rows-[340px]">
+          {[
+            {
+              slug: "indian-casuals",
+              name: "Indian Casuals",
+              description: "Everyday ethnic elegance.",
+              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_8_0.png",
+              span: "col-span-2 md:col-span-2",
+            },
+            {
+              slug: "dresses",
+              name: "Dresses",
+              description: "Flowing silhouettes for any occasion.",
+              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_40_0.png",
+              span: "col-span-1",
+            },
+            {
+              slug: "co-ord-sets",
+              name: "Co-ord Sets",
+              description: "Effortlessly matched separates.",
+              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_15_0.png",
+              span: "col-span-1",
+            },
+            {
+              slug: "blouses-tops",
+              name: "Blouses & Tops",
+              description: "Versatile tops with detailed accents.",
+              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_1_0.png",
+              span: "col-span-1",
+            },
+            {
+              slug: "casual-bottom-wear",
+              name: "Casual Bottom Wear",
+              description: "Comfortable and chic lower wear.",
+              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_30_0.png",
+              span: "col-span-1",
+            },
+            {
+              slug: "party-wear",
+              name: "Party Wear",
+              description: "Statement pieces for evening glamour.",
+              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_54_0.png",
+              span: "col-span-2 md:col-span-2",
+            },
+            {
+              slug: "active-wear",
+              name: "Active-Wear",
+              description: "Performance wear.",
+              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_22_0.png",
+              span: "col-span-2 md:col-span-1",
+            },
+          ].map((cat) => (
+            <Link
+              key={cat.slug}
+              href={`/shop/${cat.slug}`}
+              className={`group relative overflow-hidden bg-beige ${cat.span}`}
+            >
+              <Image
+                src={cat.image}
+                alt={cat.name}
+                fill
+                sizes="(max-width:768px) 100vw, (max-width:1024px) 50vw, 33vw"
+                className="object-cover transition duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-obsidian/75 via-obsidian/15 to-transparent opacity-85 transition group-hover:opacity-95" />
+              <div className="absolute inset-x-0 bottom-0 p-5 md:p-7">
+                <p className="font-serif text-2xl text-pearl md:text-3xl">{cat.name}</p>
+                <p className="mt-1 max-w-xs text-xs text-pearl/70 opacity-0 transition duration-500 group-hover:opacity-100 md:text-sm">
+                  {cat.description}
+                </p>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 

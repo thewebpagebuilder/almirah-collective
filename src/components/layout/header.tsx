@@ -150,8 +150,9 @@ export function Header() {
             </Link>
           </nav>
 
-          <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-center">
-            <span className="font-serif text-xl tracking-[0.08em] text-obsidian md:text-2xl">
+          <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-center flex items-center justify-center gap-2 md:gap-3">
+            <img src="/images/logo.png" alt="Logo" className="h-8 w-auto md:h-10 object-contain mix-blend-multiply" />
+            <span className="font-serif text-xl tracking-[0.08em] text-obsidian md:text-2xl mt-1">
               {BRAND.name}
             </span>
           </Link>

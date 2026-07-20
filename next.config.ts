@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
         hostname: "zscukxpafikmszrqwodc.supabase.co",
       },
     ],
+    unoptimized: true,
   },
 };
 
