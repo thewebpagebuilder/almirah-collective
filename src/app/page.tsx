@@ -89,10 +89,7 @@ export default async function HomePage() {
               <Sparkles className="h-3 w-3" />
               Handpicked in Bengaluru
             </div>
-            <div className="mb-4 mt-8">
-              <img src="/images/logo.png" alt="Almirah Collective Logo" className="h-20 w-auto object-contain mix-blend-multiply" />
-            </div>
-            <h1 className="mt-4 max-w-xl text-balance font-serif text-[clamp(2rem,5vw,4.5rem)] leading-[0.96] text-obsidian">
+            <h1 className="mt-5 max-w-xl text-balance font-serif text-[clamp(2rem,5vw,4.5rem)] leading-[0.96] text-obsidian">
               Understated luxe looks,{" "}
               <span className="italic text-champagne-dark">everyday</span>.
             </h1>
@@ -220,7 +217,7 @@ export default async function HomePage() {
               slug: "party-wear",
               name: "Party Wear",
               description: "Statement pieces for evening glamour.",
-              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_54_0.png",
+              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_32_0.png",
               span: "col-span-2 md:col-span-2",
             },
             {

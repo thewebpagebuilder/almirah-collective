@@ -583,7 +583,6 @@ export function AdminClient({
                     <tr key={p.id} className="border-t border-pearl/8">
                       <td className="px-4 py-3 align-top max-w-[200px]">
                         <p className="line-clamp-2">{p.name}</p>
-                        <p className="text-[10px] text-champagne mt-1">Total Stock: {p.stock}</p>
                         <div className="mt-3">
                           <div className="mb-2 flex flex-wrap gap-1">
                             {(p.images || []).map((img, i) => (

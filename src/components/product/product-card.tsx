@@ -73,7 +73,7 @@ export function ProductCard({
           
           {stock === 0 ? (
             <div className="absolute inset-x-0 bottom-0 bg-obsidian/90 px-4 py-3 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-pearl/50">
-              Sold Out
+              Out of Stock
             </div>
           ) : (
             <div className="absolute inset-x-0 bottom-0 translate-y-full bg-obsidian/90 px-4 py-3 text-center text-[10px] uppercase tracking-[0.2em] text-pearl transition duration-500 group-hover:translate-y-0">

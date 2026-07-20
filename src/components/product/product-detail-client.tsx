@@ -259,7 +259,7 @@ export function ProductDetailClient({
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             {product.stock === 0 ? (
               <div className="flex-1 flex items-center justify-center bg-obsidian/10 text-obsidian/50 font-bold uppercase tracking-[0.2em] py-3.5 text-[11px]">
-                Sold Out
+                Out of Stock
               </div>
             ) : (
               <MagneticButton 
