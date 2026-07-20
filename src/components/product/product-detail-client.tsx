@@ -73,6 +73,10 @@ export function ProductDetailClient({
   const price = Number(product.price);
   const compare = product.compareAtPrice ? Number(product.compareAtPrice) : null;
 
+  const discountPercent = compare && compare > price 
+    ? Math.round(((compare - price) / compare) * 100) 
+    : 0;
+
   const stars = useMemo(
     () => Math.round(Number(product.rating || 0)),
     [product.rating],
@@ -197,9 +201,14 @@ export function ProductDetailClient({
           <div className="mt-5 flex items-baseline gap-3">
             <span className="font-serif text-3xl">{formatCurrency(price)}</span>
             {compare && compare > price && (
-              <span className="text-obsidian/40 line-through">
-                {formatCurrency(compare)}
-              </span>
+              <>
+                <span className="text-obsidian/40 line-through">
+                  {formatCurrency(compare)}
+                </span>
+                <span className="ml-2 bg-[#D4AF37]/10 px-2 py-1 text-xs font-bold uppercase tracking-widest text-[#D4AF37]">
+                  Save {discountPercent}%
+                </span>
+              </>
             )}
           </div>
 
@@ -248,13 +257,18 @@ export function ProductDetailClient({
           </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <MagneticButton 
-              onClick={handleAdd} 
-              className="flex-1" 
-              disabled={product.stock === 0}
-            >
-              {product.stock === 0 ? "Sold Out" : `Add to Bag — ${formatCurrency(price)}`}
-            </MagneticButton>
+            {product.stock === 0 ? (
+              <div className="flex-1 flex items-center justify-center bg-obsidian/10 text-obsidian/50 font-bold uppercase tracking-[0.2em] py-3.5 text-[11px]">
+                Sold Out
+              </div>
+            ) : (
+              <MagneticButton 
+                onClick={handleAdd} 
+                className="flex-1" 
+              >
+                Add to Bag — {formatCurrency(price)}
+              </MagneticButton>
+            )}
             <MagneticButton variant="secondary" className="sm:w-auto">
               Save
             </MagneticButton>

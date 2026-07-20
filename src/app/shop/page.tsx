@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function ShopPage() {
   await ensureSeeded();
-  const all = await db.select().from(products).where(sql`products.stock > 0`).orderBy(desc(products.isFeatured));
+  const all = await db.select().from(products).orderBy(desc(products.isFeatured));
 
   return (
     <div className="mx-auto max-w-[1440px] px-5 pb-24 pt-32 md:pt-36 md:px-8">
@@ -59,6 +59,7 @@ export default async function ShopPage() {
             images={p.images}
             categorySlug={p.categorySlug}
             tags={p.tags}
+            stock={p.stock}
           />
         ))}
       </div>

@@ -30,8 +30,8 @@ export default function AboutPage() {
         />
         <div className="absolute inset-0 bg-obsidian/50" />
         <div className="relative mx-auto flex min-h-[70vh] max-w-[1440px] flex-col justify-end px-5 pb-16 pt-32 md:px-8">
-          <p className="text-[10px] uppercase tracking-[0.35em] text-champagne">
-            Our story
+          <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#D4AF37]">
+            OUR STORY
           </p>
           <h1 className="mt-4 max-w-3xl font-serif text-5xl text-pearl md:text-7xl">
             Curation over chaos.

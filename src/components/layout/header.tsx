@@ -71,27 +71,68 @@ export function Header() {
                     : "pointer-events-none opacity-0 -translate-y-2",
                 )}
               >
-                <div className="grid w-[720px] grid-cols-3 gap-1 border border-obsidian/10 bg-pearl p-6 shadow-[0_24px_80px_rgba(11,11,12,0.12)]">
-                  {CATEGORIES.map((cat) => (
-                    <Link
-                      key={cat.slug}
-                      href={`/shop/${cat.slug}`}
-                      className="group rounded-sm px-3 py-3 transition hover:bg-beige"
-                    >
-                      <p className="font-serif text-base text-obsidian group-hover:text-champagne-dark">
-                        {cat.name}
-                      </p>
-                      <p className="mt-1 text-[11px] leading-relaxed text-obsidian/50 line-clamp-2">
-                        {cat.description}
-                      </p>
+                <div className="flex w-[800px] border border-obsidian/10 bg-pearl shadow-[0_24px_80px_rgba(11,11,12,0.12)]">
+                  {/* Men Column */}
+                  <div className="flex-1 p-8 border-r border-obsidian/5">
+                    <h3 className="mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-obsidian/60">
+                      Men
+                    </h3>
+                    <div className="flex flex-col gap-2">
+                      <Link href="/shop/mens-wear" className="group block py-2">
+                        <p className="font-serif text-lg text-obsidian group-hover:text-champagne-dark transition-colors">
+                          Men's Wear
+                        </p>
+                        <p className="mt-1 text-xs leading-relaxed text-obsidian/50">
+                          Curated menswear merging classic silhouettes with modern textures.
+                        </p>
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Women Column */}
+                  <div className="flex-[1.5] p-8 border-r border-obsidian/5">
+                    <h3 className="mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-obsidian/60">
+                      Women
+                    </h3>
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+                      {[
+                        { slug: "indian-casuals", name: "Indian Casuals", desc: "Everyday ethnic elegance." },
+                        { slug: "dresses", name: "Dresses", desc: "Flowing silhouettes for any occasion." },
+                        { slug: "co-ord-sets", name: "Co-ord Sets", desc: "Effortlessly matched separates." },
+                        { slug: "blouses-tops", name: "Blouses & Tops", desc: "Versatile tops with detailed accents." },
+                        { slug: "casual-bottom-wear", name: "Casual Bottom Wear", desc: "Comfortable and chic lower wear." },
+                        { slug: "party-wear", name: "Party Wear", desc: "Statement pieces for evening glamour." },
+                        { slug: "active-wear", name: "Active-Wear", desc: "Performance wear meeting high fashion." },
+                      ].map((cat) => (
+                        <Link key={cat.slug} href={`/shop/${cat.slug}`} className="group block py-2">
+                          <p className="font-serif text-[15px] text-obsidian group-hover:text-champagne-dark transition-colors">
+                            {cat.name}
+                          </p>
+                          <p className="mt-1 text-[10px] leading-relaxed text-obsidian/40 line-clamp-1">
+                            {cat.desc}
+                          </p>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Images Column */}
+                  <div className="flex-1 flex flex-col p-4 gap-4 bg-beige/30">
+                    <Link href="/shop" className="relative flex-1 group overflow-hidden">
+                      <div className="absolute inset-0 bg-obsidian/10 group-hover:bg-transparent transition-colors z-10" />
+                      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=600&auto=format&fit=crop" alt="Editorial" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                      <div className="absolute bottom-3 left-3 z-20">
+                        <p className="text-pearl text-xs uppercase tracking-widest font-medium">New Arrivals</p>
+                      </div>
                     </Link>
-                  ))}
-                  <Link
-                    href="/shop"
-                    className="col-span-3 mt-2 border-t border-obsidian/10 pt-4 text-center text-[11px] uppercase tracking-[0.2em] text-champagne-dark"
-                  >
-                    View all collections →
-                  </Link>
+                    <Link href="/lookbook" className="relative flex-1 group overflow-hidden">
+                      <div className="absolute inset-0 bg-obsidian/10 group-hover:bg-transparent transition-colors z-10" />
+                      <img src="https://images.unsplash.com/photo-1550614000-4b95d4ebfa84?q=80&w=600&auto=format&fit=crop" alt="Lookbook" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                      <div className="absolute bottom-3 left-3 z-20">
+                        <p className="text-pearl text-xs uppercase tracking-widest font-medium">Lookbook</p>
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

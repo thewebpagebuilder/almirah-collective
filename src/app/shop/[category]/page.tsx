@@ -30,7 +30,7 @@ export default async function CategoryPage({ params }: Props) {
   const items = await db
     .select()
     .from(products)
-    .where(and(eq(products.categorySlug, category), sql`products.stock > 0`));
+    .where(eq(products.categorySlug, category));
 
   return (
     <div className="mx-auto max-w-[1440px] px-5 pb-24 pt-32 md:pt-36 md:px-8">
@@ -54,6 +54,7 @@ export default async function CategoryPage({ params }: Props) {
             compareAtPrice={p.compareAtPrice}
             images={p.images}
             tags={p.tags}
+            stock={p.stock}
           />
         ))}
       </div>

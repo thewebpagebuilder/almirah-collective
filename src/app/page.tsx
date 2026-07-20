@@ -12,8 +12,9 @@ import {
   OCCASIONS,
 } from "@/lib/catalog";
 import { SilkBackground } from "@/components/home/silk-background";
-import { HeroCollage, type HeroPanel } from "@/components/home/hero-collage";
+import { HeroSlideshow } from "@/components/home/hero-slideshow";
 import { Marquee } from "@/components/home/marquee";
+import { TrustMarquee } from "@/components/home/trust-marquee";
 import { NewsletterForm } from "@/components/home/newsletter-form";
 import { TrustBadges } from "@/components/home/trust-badges";
 import { ProductCard } from "@/components/product/product-card";
@@ -68,46 +69,12 @@ export default async function HomePage() {
           },
         ];
 
-  // Build animated hero collage: menswear + womenswear, ethnic + western
-  const byCat: Record<string, (typeof allProducts)[number]> = {};
-  for (const p of allProducts) {
-    if (!byCat[p.categorySlug]) byCat[p.categorySlug] = p;
-  }
-  const pick = (slug: string, fallback?: string) =>
-    byCat[slug] ?? (fallback ? byCat[fallback] : undefined);
-
-  const heroProduct =
-    pick("dresses") ?? pick("indian-casuals") ?? pick("co-ord-sets") ?? allProducts[0];
-  const heroPanel: HeroPanel = heroProduct
-    ? {
-        src: heroProduct.images[0],
-        alt: heroProduct.name,
-        chips:
-          heroProduct.categorySlug === "indian-casuals"
-            ? ["Women", "Ethnic"]
-            : ["Women", "Western"],
-      }
-    : { src: CATEGORIES[0].image, alt: "Almirah Collective", chips: ["Women"] };
-
-  const satellites: HeroPanel[] = [
-    pick("mens-wear"),
-    pick("co-ord-sets"),
-    pick("indian-casuals"),
-    pick("active-wear") ?? pick("blouses-tops"),
-  ]
-    .filter(Boolean)
-    .map((p, i) => ({
-      src: (p as (typeof allProducts)[number]).images[0],
-      alt: (p as (typeof allProducts)[number]).name,
-      chips:
-        i === 0
-          ? ["Men", "Western"]
-          : i === 2
-            ? ["Women", "Ethnic"]
-            : i === 3
-              ? ["Women", "Active"]
-              : ["Women", "Office"],
-    }));
+  // Build animated hero slideshow: use the requested 4 product images or fallbacks
+  const heroSlides = allProducts.slice(0, 4).map((p) => ({
+    src: p.images[0],
+    alt: p.name,
+    category: p.categorySlug.replace("-", " "),
+  }));
 
   const brandCount = BRAND.brandsCarried.length;
 
@@ -116,7 +83,7 @@ export default async function HomePage() {
       {/* Hero */}
       <section className="relative min-h-[100svh] overflow-hidden">
         <SilkBackground />
-        <div className="relative mx-auto grid min-h-[100svh] max-w-[1440px] items-center gap-8 px-5 pb-16 pt-36 md:grid-cols-2 md:px-8 md:pt-32">
+        <div className="relative mx-auto grid min-h-[100svh] max-w-[1440px] items-center gap-8 px-5 pb-16 pt-36 md:grid-cols-[1.2fr_1fr] md:px-8 md:pt-32">
           <div className="animate-fade-up order-2 md:order-1">
             <div className="inline-flex items-center gap-2 border border-champagne/40 bg-pearl/70 px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] text-champagne-dark backdrop-blur">
               <Sparkles className="h-3 w-3" />
@@ -128,53 +95,17 @@ export default async function HomePage() {
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-obsidian/65 md:text-lg">
               {BRAND.tagline}. Your wardrobe, curated by Ameena — genuine branded
-              fashion from ₹{BRAND.startingPrice}, packed with care and shipped
-              pan-India.
+              fashion, packed with care and shipped pan-India.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              {/* Primary (solid) + secondary (outline) — clear visual hierarchy */}
               <MagneticButton href="/shop">Shop the Edit</MagneticButton>
               <MagneticButton href="/lookbook" variant="secondary">
                 View Lookbook
               </MagneticButton>
             </div>
-
-            {/* Trust signals near CTA */}
-            <div className="mt-8">
-              <TrustBadges />
-            </div>
-
-            {/* High-contrast trust stats bar */}
-            <div className="mt-8 grid max-w-lg grid-cols-3 gap-3">
-              <div className="border border-obsidian bg-obsidian p-2 sm:p-4 text-pearl">
-                <p className="font-serif text-2xl text-champagne md:text-3xl">{brandCount}+</p>
-                <p className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-pearl/70">
-                  Brands carried
-                </p>
-              </div>
-              <div className="border border-obsidian bg-obsidian p-2 sm:p-4 text-pearl">
-                <p className="font-serif text-2xl text-champagne md:text-3xl">
-                  ₹{BRAND.startingPrice}
-                </p>
-                <p className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-pearl/70">
-                  Starting price
-                </p>
-              </div>
-              <div className="border border-obsidian bg-obsidian p-2 sm:p-4 text-pearl">
-                <p className="font-serif text-2xl text-champagne md:text-3xl">
-                  ₹{BRAND.freeShippingThreshold}+
-                </p>
-                <p className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-pearl/70">
-                  Free shipping
-                </p>
-              </div>
-            </div>
           </div>
-          <div className="order-1 md:order-2">
-            <HeroCollage hero={heroPanel} satellites={satellites} />
-            <p className="mt-3 text-center text-[10px] uppercase tracking-[0.25em] text-obsidian/45">
-              Every piece is unique &amp; single — one only, no restocks
-            </p>
+          <div className="order-1 md:order-2 h-[60vh] md:h-[80vh] w-full border-[6px] border-pearl bg-beige shadow-[0_30px_70px_rgba(11,11,12,0.28)]">
+            <HeroSlideshow slides={heroSlides} />
           </div>
         </div>
       </section>
@@ -303,6 +234,7 @@ export default async function HomePage() {
                 compareAtPrice={p.compareAtPrice}
                 images={p.images}
                 tags={p.tags}
+                stock={p.stock}
                 priority={i < 2}
               />
             ))}
@@ -345,11 +277,11 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(201,169,110,0.12),transparent_45%),radial-gradient(circle_at_80%_70%,rgba(11,11,12,0.05),transparent_40%)]" />
         <div className="relative mx-auto grid max-w-[1100px] items-center gap-10 px-5 md:grid-cols-[1.1fr_0.9fr] md:px-8">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-champagne-dark">
-              A note from Ameena
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37]">
+              OUR STORY
             </p>
-            <h2 className="mt-3 font-serif text-4xl leading-tight md:text-5xl">
-              “If it is in this store, it is because I would wear it myself.”
+            <h2 className="mt-3 font-serif text-4xl leading-tight text-pearl md:text-5xl">
+              Curation over chaos.
             </h2>
             <p className="mt-6 text-base leading-relaxed text-obsidian/65">
               {BRAND.story} No bulk buying, no warehouse noise — just careful selection,
@@ -437,6 +369,7 @@ export default async function HomePage() {
                 compareAtPrice={p.compareAtPrice}
                 images={p.images}
                 tags={p.tags}
+                stock={p.stock}
               />
             ))}
           </div>
@@ -465,6 +398,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Trust Badges Marquee above footer */}
+      <TrustMarquee />
     </>
   );
 }

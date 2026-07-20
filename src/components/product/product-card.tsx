@@ -14,6 +14,7 @@ type ProductCardProps = {
   categorySlug?: string;
   tags?: string[];
   priority?: boolean;
+  stock?: number;
 };
 
 export function ProductCard({
@@ -23,6 +24,7 @@ export function ProductCard({
   compareAtPrice,
   images,
   priority = false,
+  stock = 1,
 }: ProductCardProps) {
   const primary = images[0];
   const secondary = images[1] ?? images[0];
@@ -64,13 +66,20 @@ export function ProductCard({
             type="button"
             aria-label="Add to wishlist"
             onClick={(e) => e.preventDefault()}
-            className="absolute right-3 top-3 rounded-full bg-pearl/80 p-2 opacity-0 backdrop-blur-sm transition group-hover:opacity-100"
+            className="absolute right-3 top-3 rounded-full bg-pearl/80 p-2 opacity-0 backdrop-blur-sm transition group-hover:opacity-100 z-10"
           >
             <Heart className="h-3.5 w-3.5" />
           </button>
-          <div className="absolute inset-x-0 bottom-0 translate-y-full bg-obsidian/90 px-4 py-3 text-center text-[10px] uppercase tracking-[0.2em] text-pearl transition duration-500 group-hover:translate-y-0">
-            Quick view
-          </div>
+          
+          {stock === 0 ? (
+            <div className="absolute inset-x-0 bottom-0 bg-obsidian/90 px-4 py-3 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-pearl/50">
+              Sold Out
+            </div>
+          ) : (
+            <div className="absolute inset-x-0 bottom-0 translate-y-full bg-obsidian/90 px-4 py-3 text-center text-[10px] uppercase tracking-[0.2em] text-pearl transition duration-500 group-hover:translate-y-0">
+              Quick view
+            </div>
+          )}
         </div>
         <div className="mt-3 space-y-0.5">
           <h3 className="line-clamp-2 font-serif text-sm leading-snug text-obsidian transition group-hover:text-champagne-dark md:text-base">
