@@ -24,9 +24,6 @@ export const metadata: Metadata = {
     default: `${BRAND.name} — ${BRAND.tagline}`,
     template: `%s · ${BRAND.name}`,
   },
-  icons: {
-    icon: "/images/logo.png",
-  },
   description:
     "Your wardrobe, handpicked for you. Shop curated branded fashion — DKNY, Puma, W, Kook N Keech and more. Genuine pieces from ₹399, shipped pan-India.",
   keywords: [
