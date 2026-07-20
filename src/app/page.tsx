@@ -217,7 +217,7 @@ export default async function HomePage() {
               slug: "party-wear",
               name: "Party Wear",
               description: "Statement pieces for evening glamour.",
-              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_32_1.jpg",
+              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_31_0.png",
               span: "col-span-2 md:col-span-2",
             },
             {
