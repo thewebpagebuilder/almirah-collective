@@ -64,7 +64,13 @@ export function ProductDetailClient({
   const { addItem } = useCart();
   const [activeImage, setActiveImage] = useState(0);
 
-  const [size, setSize] = useState(product.sizes[0] ?? "");
+  const [size, setSize] = useState(() => {
+    const availableSize = product.sizes.find(s => ((product.stockBySize || {})[s] || 0) > 0);
+    return availableSize || (product.sizes[0] ?? "");
+  });
+
+  const isSizeAvailable = ((product.stockBySize || {})[size] || 0) > 0;
+  const isOutOfStock = Number(product.stock) <= 0 || !isSizeAvailable;
 
   const [sizeGuide, setSizeGuide] = useState(false);
   const [accordion, setAccordion] = useState<string | null>("material");
@@ -224,7 +230,7 @@ export function ProductDetailClient({
           </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            {product.stock === 0 ? (
+            {isOutOfStock ? (
               <div className="flex-1 flex items-center justify-center bg-obsidian/10 text-obsidian/50 font-bold uppercase tracking-[0.2em] py-3.5 text-[11px]">
                 Sold Out
               </div>
@@ -241,7 +247,7 @@ export function ProductDetailClient({
             </MagneticButton>
           </div>
           <p className="mt-3 text-xs text-obsidian/40">
-            {product.stock === 0
+            {isOutOfStock
               ? "Sold out — every piece is 1 of 1"
               : "In stock — ships within 48 hours"}
           </p>
