@@ -281,6 +281,57 @@ export async function ensureSeeded() {
       { email: "hello@example.com", source: "website" },
     ]);
 
+    const reviewCount = await db.select({ count: sql<number>`count(*)` }).from(reviews);
+    if (reviewCount[0].count === 0) {
+      await db.insert(reviews).values([
+        {
+          productId: 1,
+          customerName: "Priya S.",
+          rating: 5,
+          title: "Incredible quality",
+          body: "The quality is simply unmatched. It feels incredibly luxurious without being loud.",
+          isVerified: true,
+          isApproved: true,
+        },
+        {
+          productId: 1,
+          customerName: "Anjali M.",
+          rating: 5,
+          title: "Perfect fit",
+          body: "Ameena's curation is perfect. I found exactly what I needed for my sister's wedding.",
+          isVerified: true,
+          isApproved: true,
+        },
+        {
+          productId: 1,
+          customerName: "Sneha R.",
+          rating: 5,
+          title: "Fast shipping",
+          body: "Shipping was surprisingly fast, and the packaging felt like receiving a gift.",
+          isVerified: true,
+          isApproved: true,
+        },
+        {
+          productId: 1,
+          customerName: "Meera K.",
+          rating: 5,
+          title: "Understated elegance",
+          body: "Finally, an Indian brand that understands understated elegance.",
+          isVerified: true,
+          isApproved: true,
+        },
+        {
+          productId: 1, // Using dummy id for store-level reviews
+          customerName: "Anonymous",
+          rating: 5,
+          title: "Exactly what I was looking for!",
+          body: "Ordered the Goofy oversized tee and it came really well packaged. The fabric is soft and the fit is perfect — true to size. Loved that it was an actual branded piece and not some random find. Will definitely be ordering again from Almirah Collective!",
+          isVerified: true,
+          isApproved: true,
+        },
+      ]);
+    }
+
     seeded = true;
   } finally {
     reseeding = false;
