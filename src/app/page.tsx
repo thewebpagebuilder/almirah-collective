@@ -15,6 +15,7 @@ import { SilkBackground } from "@/components/home/silk-background";
 import { HeroSlideshow } from "@/components/home/hero-slideshow";
 import { Marquee } from "@/components/home/marquee";
 import { TrustMarquee } from "@/components/home/trust-marquee";
+import { ReviewsMarquee } from "@/components/home/reviews-marquee";
 import { NewsletterForm } from "@/components/home/newsletter-form";
 import { TrustBadges } from "@/components/home/trust-badges";
 import { ProductCard } from "@/components/product/product-card";
@@ -32,7 +33,7 @@ const OCCASION_ICONS: Record<string, string> = {
 export default async function HomePage() {
   await ensureSeeded();
 
-  const [featured, trending, press, allProducts] = await Promise.all([
+  const [featured, trending, press, allProducts, approvedReviews] = await Promise.all([
     db
       .select()
       .from(products)
@@ -57,6 +58,11 @@ export default async function HomePage() {
         tags: products.tags,
       })
       .from(products),
+    db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.isApproved, true))
+      .orderBy(desc(reviews.createdAt)),
   ]);
 
   const pressItems =

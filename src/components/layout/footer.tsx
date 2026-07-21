@@ -84,20 +84,30 @@ export function Footer() {
                 {BRAND.phone}
               </a>
             </li>
+            <li>
+              <a
+                href={`https://wa.me/${BRAND.whatsapp.replace("+", "")}`}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-pearl"
+              >
+                Connect on WhatsApp
+              </a>
+            </li>
             <li className="pt-2 leading-relaxed text-pearl/50">{BRAND.address}</li>
           </ul>
           <div className="mt-6 flex items-center gap-4 text-pearl/70">
             <a
-              href={`https://wa.me/${BRAND.whatsapp.replace("+", "")}`}
+              href="https://whatsapp.com/channel/0029Vb7zKUMICVffcrm0gM3v"
               target="_blank"
               rel="noreferrer"
               className="hover:text-pearl transition"
-              aria-label="WhatsApp"
+              aria-label="WhatsApp Channel"
             >
               <MessageCircle className="h-5 w-5" />
             </a>
             <a
-              href="https://www.instagram.com/almirah_collective_/"
+              href="https://www.instagram.com/almirah_collective/"
               target="_blank"
               rel="noreferrer"
               className="hover:text-pearl transition"
@@ -106,7 +116,7 @@ export function Footer() {
               <Instagram className="h-5 w-5" />
             </a>
             <a
-              href="https://www.facebook.com/almirahcollective.in"
+              href="https://www.facebook.com/profile.php?id=61590425112890"
               target="_blank"
               rel="noreferrer"
               className="hover:text-pearl transition"
@@ -115,7 +125,7 @@ export function Footer() {
               <Facebook className="h-5 w-5" />
             </a>
             <a
-              href="https://in.pinterest.com/almirahcollective/_created/"
+              href="https://in.pinterest.com/almirah_collective/"
               target="_blank"
               rel="noreferrer"
               className="hover:text-pearl transition"

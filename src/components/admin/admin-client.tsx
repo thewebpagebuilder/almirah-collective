@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { toggleReviewApprovalAction, deleteReviewAction } from "@/actions/review-actions";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import {
   AlertTriangle,
@@ -15,6 +16,7 @@ import {
   Ticket,
   TrendingUp,
   Users,
+  MessageSquareText,
 } from "lucide-react";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
 
@@ -68,6 +70,18 @@ type Complaint = {
   createdAt: Date | string;
 };
 
+type Review = {
+  id: number;
+  productId: number;
+  customerName: string;
+  rating: number;
+  title: string | null;
+  body: string;
+  isVerified: boolean;
+  isApproved: boolean;
+  createdAt: Date | string;
+};
+
 type TopProduct = { name: string; qty: number; revenue: number };
 
 type Analytics = {
@@ -92,6 +106,7 @@ type Props = {
   products: Product[];
   leads: Lead[];
   complaints: Complaint[];
+  reviews: Review[];
   analytics: Analytics;
 };
 
@@ -103,6 +118,7 @@ const TABS = [
   { id: "financials", label: "Financials", icon: DollarSign },
   { id: "analytics", label: "Customer Behaviour", icon: BarChart3 },
   { id: "rma", label: "Complaints & RMA", icon: Ticket },
+  { id: "reviews", label: "Reviews", icon: MessageSquareText },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -151,6 +167,7 @@ export function AdminClient({
   products,
   leads,
   complaints,
+  reviews,
   analytics,
 }: Props) {
   const router = useRouter();
@@ -1018,6 +1035,68 @@ export function AdminClient({
               ))}
               {complaints.length === 0 && (
                 <p className="text-sm text-pearl/45">No open tickets.</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {tab === "reviews" && (
+          <div>
+            <h2 className="font-serif text-3xl">Customer Reviews</h2>
+            <p className="mt-2 text-sm text-pearl/45">
+              Manage product reviews and testimonials.
+            </p>
+            <div className="mt-6 space-y-4">
+              {reviews.map((r) => (
+                <article key={r.id} className="grid gap-4 border border-pearl/10 p-5 md:grid-cols-[1fr_auto]">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <p className="font-medium text-champagne">{r.customerName}</p>
+                      <div className="flex items-center text-champagne">
+                        {r.rating} ★
+                      </div>
+                      <span className={`border px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] ${r.isApproved ? "border-green-500/50 text-green-400" : "border-pearl/20 text-pearl/60"}`}>
+                        {r.isApproved ? "Approved" : "Pending"}
+                      </span>
+                    </div>
+                    {r.title && <p className="mt-3 font-serif text-lg">{r.title}</p>}
+                    <p className="mt-2 text-sm text-pearl/80">&ldquo;{r.body}&rdquo;</p>
+                    <p className="mt-2 text-xs text-pearl/30">{formatDate(r.createdAt)}</p>
+                  </div>
+                  <div className="flex flex-col gap-2 md:items-end justify-center">
+                    <button
+                      onClick={async () => {
+                        const res = await toggleReviewApprovalAction(r.id, !r.isApproved);
+                        if (res.success) {
+                          router.refresh();
+                        } else {
+                          alert(res.error);
+                        }
+                      }}
+                      className="border border-pearl/15 hover:bg-pearl/10 px-4 py-2 text-xs uppercase tracking-wider transition-colors"
+                    >
+                      {r.isApproved ? "Unapprove" : "Approve"}
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (confirm("Are you sure you want to delete this review?")) {
+                          const res = await deleteReviewAction(r.id);
+                          if (res.success) {
+                            router.refresh();
+                          } else {
+                            alert(res.error);
+                          }
+                        }
+                      }}
+                      className="text-red-400/80 hover:text-red-400 px-4 py-2 text-xs uppercase tracking-wider transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </article>
+              ))}
+              {reviews.length === 0 && (
+                <p className="text-sm text-pearl/45">No reviews yet.</p>
               )}
             </div>
           </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { desc } from "drizzle-orm";
 import { db } from "@/db";
-import { orders, products, leads, complaints, orderItems, cartItems } from "@/db/schema";
+import { orders, products, leads, complaints, orderItems, cartItems, reviews } from "@/db/schema";
 import { ensureSeeded } from "@/lib/seed";
 import { AdminClient } from "@/components/admin/admin-client";
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function AdminPage() {
   await ensureSeeded();
 
-  const [allOrders, allProducts, allLeads, allComplaints, allOrderItems, allCartItems] =
+  const [allOrders, allProducts, allLeads, allComplaints, allOrderItems, allCartItems, allReviews] =
     await Promise.all([
       db.select().from(orders).orderBy(desc(orders.createdAt)),
       db.select().from(products).orderBy(products.name),
@@ -23,6 +23,7 @@ export default async function AdminPage() {
       db.select().from(complaints).orderBy(desc(complaints.createdAt)),
       db.select().from(orderItems),
       db.select().from(cartItems),
+      db.select().from(reviews).orderBy(desc(reviews.createdAt)),
     ]);
 
   const ordersWithItems = allOrders.map((order) => ({
@@ -152,6 +153,7 @@ export default async function AdminPage() {
       }))}
       leads={allLeads}
       complaints={allComplaints}
+      reviews={allReviews}
       analytics={{
         cartAdds,
         cartSessions,
