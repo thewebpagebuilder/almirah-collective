@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, BadgeCheck, Package, Sparkles, Truck, Heart, CheckSquare, MessageCircle } from "lucide-react";
 import { desc, eq, and, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { products, pressMentions } from "@/db/schema";
+import { products, pressMentions, reviews } from "@/db/schema";
 import { ensureSeeded } from "@/lib/seed";
 import {
   CATEGORIES,
