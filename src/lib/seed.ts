@@ -285,7 +285,7 @@ export async function ensureSeeded() {
     if (reviewCount[0].count === 0) {
       await db.insert(reviews).values([
         {
-          productId: 1,
+          productId: allProducts[0]?.id,
           customerName: "Priya S.",
           rating: 5,
           title: "Incredible quality",
@@ -294,7 +294,7 @@ export async function ensureSeeded() {
           isApproved: true,
         },
         {
-          productId: 1,
+          productId: allProducts[0]?.id,
           customerName: "Anjali M.",
           rating: 5,
           title: "Perfect fit",
@@ -303,7 +303,7 @@ export async function ensureSeeded() {
           isApproved: true,
         },
         {
-          productId: 1,
+          productId: allProducts[0]?.id,
           customerName: "Sneha R.",
           rating: 5,
           title: "Fast shipping",
@@ -312,7 +312,7 @@ export async function ensureSeeded() {
           isApproved: true,
         },
         {
-          productId: 1,
+          productId: allProducts[0]?.id,
           customerName: "Meera K.",
           rating: 5,
           title: "Understated elegance",
@@ -321,7 +321,7 @@ export async function ensureSeeded() {
           isApproved: true,
         },
         {
-          productId: 1, // Using dummy id for store-level reviews
+          productId: allProducts[0]?.id, // Using dummy id for store-level reviews
           customerName: "Anonymous",
           rating: 5,
           title: "Exactly what I was looking for!",
