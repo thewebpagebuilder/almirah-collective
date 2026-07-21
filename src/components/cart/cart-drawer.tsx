@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, X } from "lucide-react";
+import { useState } from "react";
 import { useCart } from "@/context/cart-context";
 import { BRAND } from "@/lib/catalog";
 import { cn, formatCurrency, freeShippingProgress } from "@/lib/utils";
@@ -17,8 +18,22 @@ export function CartDrawer() {
     updateQuantity,
     subtotal,
   } = useCart();
+  
+  const [discountCode, setDiscountCode] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState<number | null>(null);
 
-  const progress = freeShippingProgress(subtotal, BRAND.freeShippingThreshold);
+  const handleApplyDiscount = () => {
+    if (discountCode.toUpperCase() === BRAND.discountCode) {
+      setAppliedDiscount(0.1); // 10% off
+    } else {
+      setAppliedDiscount(null);
+      alert("Invalid discount code");
+    }
+  };
+
+  const finalSubtotal = appliedDiscount ? subtotal * (1 - appliedDiscount) : subtotal;
+
+  const progress = freeShippingProgress(finalSubtotal, BRAND.freeShippingThreshold);
 
   return (
     <>
@@ -167,20 +182,40 @@ export function CartDrawer() {
 
         {items.length > 0 && (
           <div className="border-t border-obsidian/10 px-6 py-5">
-            <div className="mb-2 flex items-center justify-between rounded-sm border border-champagne/40 bg-champagne/10 px-3 py-2 text-xs text-obsidian/70">
-              <span>Complete the look — add a top before free shipping.</span>
-            </div>
-            <div className="mb-3 flex items-center justify-between rounded-sm border border-dashed border-obsidian/25 px-3 py-2 text-xs">
-              <span className="text-obsidian/60">First order? Use code</span>
-              <span className="font-mono font-semibold tracking-widest text-obsidian">
-                {BRAND.discountCode}
-              </span>
+            <div className="mb-4">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Discount code"
+                  value={discountCode}
+                  onChange={(e) => setDiscountCode(e.target.value)}
+                  className="flex-1 rounded-sm border border-obsidian/20 bg-transparent px-3 py-2 text-xs uppercase tracking-wider outline-none placeholder:text-obsidian/30 focus:border-obsidian"
+                />
+                <button
+                  onClick={handleApplyDiscount}
+                  className="rounded-sm bg-obsidian px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-pearl transition-opacity hover:opacity-90"
+                >
+                  Apply
+                </button>
+              </div>
+              {appliedDiscount && (
+                <p className="mt-2 text-xs text-green-700">
+                  Code applied! {BRAND.discountCode} (-10%)
+                </p>
+              )}
             </div>
             <div className="flex items-center justify-between">
               <span className="text-[11px] uppercase tracking-[0.2em] text-obsidian/50">
                 Subtotal
               </span>
-              <span className="font-serif text-2xl">{formatCurrency(subtotal)}</span>
+              <div className="flex flex-col items-end">
+                {appliedDiscount && (
+                  <span className="text-xs text-obsidian/40 line-through">
+                    {formatCurrency(subtotal)}
+                  </span>
+                )}
+                <span className="font-serif text-2xl">{formatCurrency(finalSubtotal)}</span>
+              </div>
             </div>
             <p className="mt-1 text-xs text-obsidian/40">
               Taxes and shipping calculated at checkout

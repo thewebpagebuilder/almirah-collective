@@ -65,7 +65,7 @@ export function ProductDetailClient({
   const [activeImage, setActiveImage] = useState(0);
 
   const [size, setSize] = useState(product.sizes[0] ?? "");
-  const [view360, setView360] = useState(false);
+
   const [sizeGuide, setSizeGuide] = useState(false);
   const [accordion, setAccordion] = useState<string | null>("material");
   const [zoom, setZoom] = useState(false);
@@ -105,49 +105,17 @@ export function ProductDetailClient({
             )}
             onClick={() => setZoom((z) => !z)}
           >
-            {view360 ? (
-              <div className="flex h-full flex-col items-center justify-center gap-4 bg-gradient-to-br from-beige to-pearl p-8">
-                <div className="relative h-64 w-48 animate-spin-slow">
-                  <div className="absolute inset-0 rounded-[40%] bg-gradient-to-b from-obsidian/90 to-obsidian shadow-2xl" />
-                  <div className="absolute inset-x-[20%] top-[15%] h-[50%] rounded-full border border-champagne/40" />
-                </div>
-                <p className="text-[10px] uppercase tracking-[0.25em] text-obsidian/50">
-                  360° view · drag to rotate (preview)
-                </p>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setView360(false);
-                  }}
-                  className="text-xs uppercase tracking-[0.2em] text-champagne-dark"
-                >
-                  Exit 360
-                </button>
-              </div>
-            ) : (
-              <Image
-                src={product.images[activeImage]}
-                alt={product.name}
-                fill
-                priority
-                sizes="(max-width:1024px) 100vw, 50vw"
-                className={cn(
-                  "object-cover transition duration-500",
-                  zoom && "scale-150",
-                )}
-              />
-            )}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setView360((v) => !v);
-              }}
-              className="absolute bottom-4 left-4 flex items-center gap-2 bg-pearl/90 px-3 py-2 text-[10px] uppercase tracking-[0.18em] backdrop-blur"
-            >
-              <RotateCcw className="h-3.5 w-3.5" /> 360° View
-            </button>
+            <Image
+              src={product.images[activeImage]}
+              alt={product.name}
+              fill
+              priority
+              sizes="(max-width:1024px) 100vw, 50vw"
+              className={cn(
+                "object-cover transition duration-500",
+                zoom && "scale-150",
+              )}
+            />
           </div>
           <div className="mt-3 flex gap-2 overflow-x-auto">
             {product.images.map((img, i) => (
@@ -156,11 +124,10 @@ export function ProductDetailClient({
                 type="button"
                 onClick={() => {
                   setActiveImage(i);
-                  setView360(false);
                 }}
                 className={cn(
                   "relative h-20 w-16 shrink-0 overflow-hidden border",
-                  activeImage === i && !view360
+                  activeImage === i
                     ? "border-obsidian"
                     : "border-transparent opacity-70",
                 )}
@@ -259,7 +226,7 @@ export function ProductDetailClient({
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             {product.stock === 0 ? (
               <div className="flex-1 flex items-center justify-center bg-obsidian/10 text-obsidian/50 font-bold uppercase tracking-[0.2em] py-3.5 text-[11px]">
-                Out of Stock
+                Sold Out
               </div>
             ) : (
               <MagneticButton 
@@ -275,7 +242,7 @@ export function ProductDetailClient({
           </div>
           <p className="mt-3 text-xs text-obsidian/40">
             {product.stock === 0
-              ? "Out of stock — every piece is 1 of 1"
+              ? "Sold out — every piece is 1 of 1"
               : "In stock — ships within 48 hours"}
           </p>
 

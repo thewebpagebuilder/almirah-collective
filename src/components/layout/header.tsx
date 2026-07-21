@@ -59,7 +59,7 @@ export function Header() {
             >
               <button
                 type="button"
-                className="group relative flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] text-obsidian/80 transition-colors hover:text-obsidian after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-obsidian after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100"
+                className="group relative flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] text-obsidian/80 transition-colors hover:text-obsidian border-b border-transparent hover:border-obsidian pb-1"
               >
                 Shop <ChevronDown className="h-3.5 w-3.5" />
               </button>
@@ -79,7 +79,7 @@ export function Header() {
                     </h3>
                     <div className="flex flex-col gap-2">
                       <Link href="/shop/mens-wear" className="group block py-2">
-                        <p className="font-serif text-lg text-obsidian group-hover:text-champagne-dark transition-colors">
+                        <p className="font-serif text-[15px] text-obsidian group-hover:text-champagne-dark transition-colors">
                           Men's Wear
                         </p>
                         <p className="mt-1 text-xs leading-relaxed text-obsidian/50">
@@ -108,7 +108,7 @@ export function Header() {
                           <p className="font-serif text-[15px] text-obsidian group-hover:text-champagne-dark transition-colors">
                             {cat.name}
                           </p>
-                          <p className="mt-1 text-[10px] leading-relaxed text-obsidian/40 line-clamp-1">
+                          <p className="mt-1 text-[10px] leading-relaxed text-obsidian/40">
                             {cat.desc}
                           </p>
                         </Link>
@@ -138,13 +138,13 @@ export function Header() {
             </div>
             <Link
               href="/lookbook"
-              className="group relative text-[11px] uppercase tracking-[0.2em] text-obsidian/80 transition-colors hover:text-obsidian after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-obsidian after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100"
+              className="group relative text-[11px] uppercase tracking-[0.2em] text-obsidian/80 transition-colors hover:text-obsidian border-b border-transparent hover:border-obsidian pb-1"
             >
               Lookbook
             </Link>
             <Link
               href="/about"
-              className="group relative text-[11px] uppercase tracking-[0.2em] text-obsidian/80 transition-colors hover:text-obsidian after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-obsidian after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100"
+              className="group relative text-[11px] uppercase tracking-[0.2em] text-obsidian/80 transition-colors hover:text-obsidian border-b border-transparent hover:border-obsidian pb-1"
             >
               About
             </Link>

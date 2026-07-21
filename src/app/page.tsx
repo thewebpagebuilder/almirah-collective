@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, Package, Sparkles, Truck } from "lucide-react";
+import { ArrowRight, BadgeCheck, Package, Sparkles, Truck, Heart, CheckSquare, MessageCircle } from "lucide-react";
 import { desc, eq, and, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { products, pressMentions } from "@/db/schema";
@@ -94,7 +94,7 @@ export default async function HomePage() {
               <span className="italic text-champagne-dark">everyday</span>.
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-obsidian/65 md:text-lg">
-              {BRAND.tagline}. Your wardrobe, curated by Ameena — genuine branded
+              Your wardrobe, thoughtfully curated — genuine branded
               fashion, packed with care and shipped pan-India.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -128,32 +128,18 @@ export default async function HomePage() {
       </section>
 
       {/* Trust row */}
-      <section className="mx-auto grid max-w-[1440px] gap-4 px-5 py-10 md:grid-cols-3 md:px-8">
+      <section className="mx-auto flex max-w-[1440px] flex-wrap justify-between gap-6 px-5 py-10 md:px-8 border-b border-obsidian/5">
         {[
-          {
-            icon: BadgeCheck,
-            title: "Genuine only",
-            text: "Authentic branded finds — carefully verified, never counterfeit.",
-          },
-          {
-            icon: Package,
-            title: "Packed by Ameena",
-            text: "Every order is personally packed from Bengaluru with care notes.",
-          },
-          {
-            icon: Truck,
-            title: "Pan-India delivery",
-            text: "Free shipping over ₹699. Most orders arrive in 3–7 days.",
-          },
+          { icon: Truck, title: "₹49 Shipping.", text: "Free above ₹699" },
+          { icon: Heart, title: "Brand New", text: "Fresh Stock, never worn" },
+          { icon: CheckSquare, title: "Ships Pan-India", text: "Doorstep delivery nationwide" },
+          { icon: MessageCircle, title: "Easy Returns", text: "Hassle-free Process" },
         ].map((item) => (
-          <div
-            key={item.title}
-            className="flex gap-4 border border-obsidian/8 bg-beige/40 p-5 transition hover:border-champagne/40"
-          >
-            <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-champagne-dark" />
-            <div>
-              <p className="font-serif text-xl">{item.title}</p>
-              <p className="mt-1 text-sm leading-relaxed text-obsidian/60">{item.text}</p>
+          <div key={item.title} className="flex items-center gap-3">
+            <item.icon className="h-7 w-7 text-obsidian" strokeWidth={1.5} />
+            <div className="flex flex-col">
+              <p className="font-serif text-[15px] text-obsidian leading-snug">{item.title}</p>
+              <p className="text-[13px] text-obsidian/70">{item.text}</p>
             </div>
           </div>
         ))}
@@ -163,10 +149,7 @@ export default async function HomePage() {
       <section className="mx-auto max-w-[1440px] px-5 py-16 md:px-8 md:py-24">
         <div className="mb-12 flex flex-col justify-between gap-4 md:mb-16 md:flex-row md:items-end">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-champagne-dark">
-              Shop by world
-            </p>
-            <h2 className="mt-3 font-serif text-3xl md:text-5xl">The Almirah edit</h2>
+            <h2 className="mt-3 font-serif text-3xl md:text-5xl">Shop by collection</h2>
           </div>
           <Link
             href="/shop"
@@ -189,7 +172,7 @@ export default async function HomePage() {
               slug: "dresses",
               name: "Dresses",
               description: "Flowing silhouettes for any occasion.",
-              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_40_0.png",
+              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_50_0.png",
               span: "col-span-1",
             },
             {
@@ -292,7 +275,7 @@ export default async function HomePage() {
           </p>
           <h2 className="mt-3 font-serif text-3xl md:text-5xl">Shop by occasion</h2>
           <p className="mx-auto mt-3 max-w-md text-sm text-obsidian/55">
-            We&apos;re tagging every piece by styling story — so soon each look
+            We're tagging every piece by styling story — so soon each look
             comes together effortlessly.
           </p>
         </div>
@@ -306,9 +289,6 @@ export default async function HomePage() {
               <span className="text-3xl">{OCCASION_ICONS[o.icon] ?? "✨"}</span>
               <p className="mt-4 font-serif text-2xl">{o.name}</p>
               <p className="mt-2 text-xs leading-relaxed text-obsidian/55">{o.blurb}</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-champagne-dark">
-                Explore <ArrowRight className="h-3 w-3" />
-              </span>
             </Link>
           ))}
         </div>
@@ -318,19 +298,21 @@ export default async function HomePage() {
       <section className="relative overflow-hidden py-20 md:py-28">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(201,169,110,0.12),transparent_45%),radial-gradient(circle_at_80%_70%,rgba(11,11,12,0.05),transparent_40%)]" />
         <div className="relative mx-auto grid max-w-[1100px] items-center gap-10 px-5 md:grid-cols-[1.1fr_0.9fr] md:px-8">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37]">
+          <div className="bg-[#E6DBCA] p-8 md:p-12 shadow-sm rounded-sm max-w-xl">
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37] mb-2">
               OUR STORY
             </p>
-            <h2 className="mt-3 font-serif text-4xl leading-tight text-pearl md:text-5xl">
+            <h2 className="font-serif text-4xl leading-tight text-obsidian md:text-5xl bg-[#D3C3A8] inline-block px-2">
               Curation over chaos.
             </h2>
-            <p className="mt-6 text-base leading-relaxed text-obsidian/65">
-              {BRAND.story} No bulk buying, no warehouse noise — just careful selection,
-              one piece at a time.
+            <p className="mt-6 text-base leading-relaxed text-obsidian/80">
+              Almirah Collective started with a simple frustration — too much noise,
+              too many options, too little curation. Every piece is handpicked, genuine,
+              and packed with care from Bengaluru. No bulk buying, no warehouse
+              noise — just careful selection, one piece at a time.
             </p>
-            <MagneticButton href="/about" className="mt-8" variant="secondary">
-              Our story
+            <MagneticButton href="/about" className="mt-8 border border-obsidian text-obsidian hover:bg-obsidian hover:text-pearl bg-transparent" variant="secondary">
+              OUR STORY
             </MagneticButton>
           </div>
           <div className="relative aspect-[4/5] overflow-hidden border border-obsidian/10 bg-beige">
@@ -392,32 +374,30 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Trending */}
-      <section className="border-t border-obsidian/8 py-20 md:py-28">
+      {/* Reviews */}
+      <section className="border-t border-obsidian/8 py-20 md:py-28 bg-[#FAF7F2]">
         <div className="mx-auto max-w-[1440px] px-5 md:px-8">
-          <div className="mb-12">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-champagne-dark">
-              Now trending
-            </p>
-            <h2 className="mt-3 font-serif text-3xl md:text-5xl">In demand</h2>
+          <div className="mb-12 text-center">
+            <h2 className="font-serif text-3xl md:text-5xl text-obsidian">Real reviews</h2>
+            <p className="mt-3 text-sm text-obsidian/60">From our verified buyers across India</p>
           </div>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-            {trending.slice(0, 4).map((p) => (
-              <ProductCard
-                key={p.id}
-                slug={p.slug}
-                name={p.name}
-                price={p.price}
-                compareAtPrice={p.compareAtPrice}
-                images={p.images}
-                tags={p.tags}
-                stock={p.stock}
-              />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { name: "Priya S.", text: "Absolutely in love with the quality. It's so rare to find genuine branded pieces in such perfect condition online. The packaging was lovely too!" },
+              { name: "Ananya M.", text: "My go-to place for curated fashion now. I bought a dress for a party and got so many compliments. Authentic and beautifully packed." },
+              { name: "Kavya R.", text: "Fast shipping and exactly as described. Love that I can trust Almirah Collective for authentic brands without the retail markup." }
+            ].map((review, i) => (
+              <div key={i} className="bg-pearl p-8 border border-obsidian/10 flex flex-col gap-4">
+                <div className="flex gap-1 text-champagne-dark">
+                  {"★★★★★"}
+                </div>
+                <p className="text-sm leading-relaxed text-obsidian/75 italic">"{review.text}"</p>
+                <p className="text-xs font-bold uppercase tracking-wider mt-auto pt-4 border-t border-obsidian/5">{review.name}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
-
       <Marquee items={pressItems} />
 
       {/* Newsletter */}

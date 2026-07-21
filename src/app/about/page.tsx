@@ -53,8 +53,7 @@ export default function AboutPage() {
           </p>
           <p>
             So I built Almirah Collective. I&apos;m constantly hunting for genuine,
-            unique pieces — labels like DKNY, Puma, W, Chemistry, Mast & Harbour and
-            more — at better prices than retail. No bulk buying, no warehouse. Just
+            unique pieces from top global and premium labels at better prices than retail. No bulk buying, no warehouse. Just
             careful selection, one piece at a time.
           </p>
           <p>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BRAND, CATEGORIES } from "@/lib/catalog";
+import { Instagram, Facebook, MessageCircle, Pin } from "lucide-react";
 
 export function Footer() {
   return (
@@ -83,18 +84,46 @@ export function Footer() {
                 {BRAND.phone}
               </a>
             </li>
-            <li>
-              <a
-                href={`https://wa.me/${BRAND.whatsapp.replace("+", "")}`}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-pearl"
-              >
-                Connect on WhatsApp
-              </a>
-            </li>
             <li className="pt-2 leading-relaxed text-pearl/50">{BRAND.address}</li>
           </ul>
+          <div className="mt-6 flex items-center gap-4 text-pearl/70">
+            <a
+              href={`https://wa.me/${BRAND.whatsapp.replace("+", "")}`}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-pearl transition"
+              aria-label="WhatsApp"
+            >
+              <MessageCircle className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.instagram.com/almirah_collective_/"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-pearl transition"
+              aria-label="Instagram"
+            >
+              <Instagram className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.facebook.com/almirahcollective.in"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-pearl transition"
+              aria-label="Facebook"
+            >
+              <Facebook className="h-5 w-5" />
+            </a>
+            <a
+              href="https://in.pinterest.com/almirahcollective/_created/"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-pearl transition"
+              aria-label="Pinterest"
+            >
+              <Pin className="h-5 w-5" />
+            </a>
+          </div>
         </div>
       </div>
 
