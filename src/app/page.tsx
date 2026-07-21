@@ -62,7 +62,8 @@ export default async function HomePage() {
       .select()
       .from(reviews)
       .where(eq(reviews.isApproved, true))
-      .orderBy(desc(reviews.createdAt)),
+      .orderBy(desc(reviews.createdAt))
+      .catch(() => []),
   ]);
 
   const pressItems =

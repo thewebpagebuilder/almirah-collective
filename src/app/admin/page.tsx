@@ -23,7 +23,7 @@ export default async function AdminPage() {
       db.select().from(complaints).orderBy(desc(complaints.createdAt)),
       db.select().from(orderItems),
       db.select().from(cartItems),
-      db.select().from(reviews).orderBy(desc(reviews.createdAt)),
+      db.select().from(reviews).orderBy(desc(reviews.createdAt)).catch(() => []),
     ]);
 
   const ordersWithItems = allOrders.map((order) => ({
