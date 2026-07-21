@@ -210,7 +210,7 @@ export default async function HomePage() {
               slug: "casual-bottom-wear",
               name: "Casual Bottom Wear",
               description: "Comfortable and chic lower wear.",
-              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_30_0.png",
+              image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_43_0.png",
               span: "col-span-1",
             },
             {

@@ -59,7 +59,7 @@ export function Header() {
             >
               <button
                 type="button"
-                className="flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] text-obsidian/80 transition hover:text-obsidian"
+                className="group relative flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] text-obsidian/80 transition-colors hover:text-obsidian after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-obsidian after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100"
               >
                 Shop <ChevronDown className="h-3.5 w-3.5" />
               </button>
@@ -138,13 +138,13 @@ export function Header() {
             </div>
             <Link
               href="/lookbook"
-              className="text-[11px] uppercase tracking-[0.2em] text-obsidian/80 hover:text-obsidian"
+              className="group relative text-[11px] uppercase tracking-[0.2em] text-obsidian/80 transition-colors hover:text-obsidian after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-obsidian after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100"
             >
               Lookbook
             </Link>
             <Link
               href="/about"
-              className="text-[11px] uppercase tracking-[0.2em] text-obsidian/80 hover:text-obsidian"
+              className="group relative text-[11px] uppercase tracking-[0.2em] text-obsidian/80 transition-colors hover:text-obsidian after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-obsidian after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100"
             >
               About
             </Link>

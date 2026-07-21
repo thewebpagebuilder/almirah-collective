@@ -66,12 +66,7 @@ export function HeroSlideshow({ slides }: Props) {
         </div>
       ))}
 
-      {/* Caption Top-Right */}
-      <div className="absolute top-4 right-4 z-20">
-        <span className="bg-pearl/90 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-obsidian backdrop-blur-md shadow-sm">
-          {slides[currentIndex]?.category || "Curated"}
-        </span>
-      </div>
+
 
       {/* Dots Bottom-Left */}
       <div className="absolute bottom-6 left-6 z-20 flex gap-2">
