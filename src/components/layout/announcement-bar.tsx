@@ -18,11 +18,11 @@ export function AnnouncementBar() {
           <span className="text-pearl/80">First order?</span>
           <span className="inline-flex items-center gap-1 font-medium text-champagne">
             <Tag className="h-3 w-3" />
-            Code
+            Use Code
             <span className="rounded bg-champagne/20 px-1.5 py-0.5 font-mono tracking-widest text-pearl">
               {BRAND.discountCode}
             </span>
-            = {BRAND.discountPercent}% off
+            for {BRAND.discountPercent}% off
           </span>
           <span className="hidden text-pearl/40 sm:inline">·</span>
           <span className="hidden text-pearl/70 sm:inline">
