@@ -33,8 +33,8 @@ export default function AboutPage() {
           <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#D4AF37]">
             OUR STORY
           </p>
-          <h1 className="mt-4 max-w-3xl font-serif text-5xl text-pearl md:text-7xl">
-            Curation over chaos.
+          <h1 className="mt-4 max-w-4xl font-serif text-5xl text-pearl md:text-7xl">
+            Stop impulse buying. Start building a wardrobe that lasts.
           </h1>
         </div>
       </section>
