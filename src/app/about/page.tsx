@@ -21,7 +21,7 @@ export default function AboutPage() {
     <div>
       <section className="relative min-h-[70vh] overflow-hidden">
         <Image
-          src="/images/about/about_banner_wide.png"
+          src="/images/about/attached_image.jpg"
           alt="Almirah Collective story"
           fill
           priority

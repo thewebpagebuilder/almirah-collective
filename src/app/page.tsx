@@ -324,8 +324,8 @@ export default async function HomePage() {
           </div>
           <div className="relative aspect-[4/5] overflow-hidden border border-obsidian/10 bg-beige">
             <Image
-              src={LOOKBOOK[0]?.image || CATEGORIES[0].image}
-              alt="Almirah Collective curation"
+              src="https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_52_0.png"
+              alt="OOrchin Floral Ruffle Bell Sleeve Top"
               fill
               className="object-cover"
               sizes="40vw"
