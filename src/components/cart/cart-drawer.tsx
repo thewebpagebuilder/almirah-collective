@@ -17,21 +17,17 @@ export function CartDrawer() {
     removeItem,
     updateQuantity,
     subtotal,
+    finalSubtotal,
+    appliedDiscount,
+    discountCodeStr,
+    applyDiscount,
   } = useCart();
   
-  const [discountCode, setDiscountCode] = useState("");
-  const [appliedDiscount, setAppliedDiscount] = useState<number | null>(null);
+  const [discountCodeInput, setDiscountCodeInput] = useState("");
 
   const handleApplyDiscount = () => {
-    if (discountCode.toUpperCase() === BRAND.discountCode) {
-      setAppliedDiscount(0.1); // 10% off
-    } else {
-      setAppliedDiscount(null);
-      alert("Invalid discount code");
-    }
+    applyDiscount(discountCodeInput);
   };
-
-  const finalSubtotal = appliedDiscount ? subtotal * (1 - appliedDiscount) : subtotal;
 
   const progress = freeShippingProgress(finalSubtotal, BRAND.freeShippingThreshold);
 
@@ -187,8 +183,8 @@ export function CartDrawer() {
                 <input
                   type="text"
                   placeholder="Discount code"
-                  value={discountCode}
-                  onChange={(e) => setDiscountCode(e.target.value)}
+                  value={discountCodeInput}
+                  onChange={(e) => setDiscountCodeInput(e.target.value)}
                   className="flex-1 rounded-sm border border-obsidian/20 bg-transparent px-3 py-2 text-xs uppercase tracking-wider outline-none placeholder:text-obsidian/30 focus:border-obsidian"
                 />
                 <button
@@ -200,7 +196,7 @@ export function CartDrawer() {
               </div>
               {appliedDiscount && (
                 <p className="mt-2 text-xs text-green-700">
-                  Code applied! {BRAND.discountCode} (-10%)
+                  Code applied! {discountCodeStr} (-10%)
                 </p>
               )}
             </div>

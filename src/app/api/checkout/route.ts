@@ -28,6 +28,7 @@ const checkoutSchema = z.object({
     postalCode: z.string().regex(/^\d{6}$/, "Must be a valid 6-digit postal code"),
     country: z.string().optional(),
   }),
+  discountCode: z.string().optional(),
 });
 
 export async function POST(request: Request) {
@@ -115,8 +116,14 @@ export async function POST(request: Request) {
         .where(eq(products.id, product.id));
     }
 
-    const shipping = subtotal >= BRAND.freeShippingThreshold ? 0 : 299;
-    const total = subtotal + shipping;
+    let discountAmount = 0;
+    if (body.discountCode?.toUpperCase() === BRAND.discountCode) {
+      discountAmount = subtotal * 0.1; // 10% off
+    }
+
+    const finalSubtotal = subtotal - discountAmount;
+    const shipping = finalSubtotal >= BRAND.freeShippingThreshold ? 0 : 299;
+    const total = finalSubtotal + shipping;
 
     const [order] = await db
       .insert(orders)
@@ -125,7 +132,7 @@ export async function POST(request: Request) {
         customerEmail: body.email.trim().toLowerCase(),
         customerName: body.name.trim(),
         status: "placed",
-        subtotal: String(subtotal),
+        subtotal: String(finalSubtotal),
         shipping: String(shipping),
         tax: "0",
         total: String(total),

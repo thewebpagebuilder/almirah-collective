@@ -41,7 +41,7 @@ export default async function ProductPage({ params }: Props) {
   if (!product) notFound();
 
   const [productReviews, related] = await Promise.all([
-    db.select().from(reviews).where(eq(reviews.productId, product.id)).catch(() => []),
+    db.select().from(reviews).where(and(eq(reviews.productId, product.id), eq(reviews.isApproved, true))).catch(() => []),
     db
       .select({
       id: products.id,

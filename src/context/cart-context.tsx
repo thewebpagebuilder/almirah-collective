@@ -37,7 +37,12 @@ type CartContextValue = {
   ) => void;
   clearCart: () => void;
   subtotal: number;
+  finalSubtotal: number;
   itemCount: number;
+  appliedDiscount: number | null;
+  discountCodeStr: string;
+  applyDiscount: (code: string) => void;
+  removeDiscount: () => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -51,6 +56,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartLine[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [discountCodeStr, setDiscountCodeStr] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState<number | null>(null);
 
   useEffect(() => {
     try {
@@ -125,6 +132,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [items],
   );
 
+  const finalSubtotal = useMemo(
+    () => (appliedDiscount ? subtotal * (1 - appliedDiscount) : subtotal),
+    [subtotal, appliedDiscount]
+  );
+
+  const applyDiscount = useCallback((code: string) => {
+    // Basic hardcoded logic matching catalog.ts BRAND.discountCode
+    if (code.toUpperCase() === "ALMIRAH10") {
+      setAppliedDiscount(0.1);
+      setDiscountCodeStr(code.toUpperCase());
+    } else {
+      setAppliedDiscount(null);
+      setDiscountCodeStr("");
+      alert("Invalid discount code");
+    }
+  }, []);
+
+  const removeDiscount = useCallback(() => {
+    setAppliedDiscount(null);
+    setDiscountCodeStr("");
+  }, []);
+
   const itemCount = useMemo(
     () => items.reduce((sum, i) => sum + i.quantity, 0),
     [items],
@@ -142,7 +171,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       updateQuantity,
       clearCart,
       subtotal,
+      finalSubtotal,
       itemCount,
+      appliedDiscount,
+      discountCodeStr,
+      applyDiscount,
+      removeDiscount,
     }),
     [
       items,
@@ -155,7 +189,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       updateQuantity,
       clearCart,
       subtotal,
+      finalSubtotal,
       itemCount,
+      appliedDiscount,
+      discountCodeStr,
+      applyDiscount,
+      removeDiscount,
     ],
   );
 

@@ -7,18 +7,19 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/context/cart-context";
 import { useAuth } from "@/context/auth-context";
 import { BRAND } from "@/lib/catalog";
-import { formatCurrency, freeShippingProgress } from "@/lib/utils";
+import { formatCurrency, freeShippingProgress, cn } from "@/lib/utils";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { RazorpayIntegration } from "@/components/checkout/razorpay-integration";
 
 export default function CheckoutPage() {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, subtotal, finalSubtotal, appliedDiscount, discountCodeStr, clearCart } = useCart();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPayment, setShowPayment] = useState(false);
   const [pendingOrder, setPendingOrder] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod">("razorpay");
   const [form, setForm] = useState({
     name: user?.user_metadata?.full_name || "",
     email: user?.email || "",
@@ -37,9 +38,9 @@ export default function CheckoutPage() {
     }
   }, [user, authLoading, router]);
 
-  const progress = freeShippingProgress(subtotal, BRAND.freeShippingThreshold);
+  const progress = freeShippingProgress(finalSubtotal, BRAND.freeShippingThreshold);
   const shipping = progress.remaining > 0 ? 299 : 0;
-  const total = subtotal + shipping;
+  const total = finalSubtotal + shipping;
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -74,6 +75,7 @@ export default function CheckoutPage() {
             postalCode: form.postalCode,
             country: "India",
           },
+          discountCode: appliedDiscount ? discountCodeStr : undefined,
         }),
       });
       const data = (await res.json()) as {
@@ -83,7 +85,13 @@ export default function CheckoutPage() {
       if (!res.ok) throw new Error(data.error || "Checkout failed");
       
       setPendingOrder(data.orderNumber ?? null);
-      setShowPayment(true);
+      
+      if (paymentMethod === "cod") {
+        clearCart();
+        router.push(`/checkout/success?order=${data.orderNumber || ""}`);
+      } else {
+        setShowPayment(true);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Checkout failed");
     } finally {
@@ -209,10 +217,54 @@ export default function CheckoutPage() {
             />
           </fieldset>
 
+          <fieldset className="space-y-4">
+            <legend className="text-[11px] uppercase tracking-[0.2em] text-obsidian/50">
+              Payment Method
+            </legend>
+            <div className="grid grid-cols-2 gap-3">
+              <label
+                className={cn(
+                  "cursor-pointer border px-4 py-3 text-center text-sm transition-colors",
+                  paymentMethod === "razorpay"
+                    ? "border-obsidian bg-obsidian text-pearl"
+                    : "border-obsidian/15 bg-transparent hover:border-obsidian/40"
+                )}
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="razorpay"
+                  checked={paymentMethod === "razorpay"}
+                  onChange={() => setPaymentMethod("razorpay")}
+                  className="sr-only"
+                />
+                Razorpay
+              </label>
+              <label
+                className={cn(
+                  "cursor-pointer border px-4 py-3 text-center text-sm transition-colors",
+                  paymentMethod === "cod"
+                    ? "border-obsidian bg-obsidian text-pearl"
+                    : "border-obsidian/15 bg-transparent hover:border-obsidian/40"
+                )}
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="cod"
+                  checked={paymentMethod === "cod"}
+                  onChange={() => setPaymentMethod("cod")}
+                  className="sr-only"
+                />
+                Cash on Delivery
+              </label>
+            </div>
+          </fieldset>
+
           {error && <p className="text-sm text-red-700">{error}</p>}
 
           <MagneticButton type="submit" className="w-full" disabled={loading}>
-            {loading ? "Placing order…" : `Pay ${formatCurrency(total)}`}
+            {loading ? "Placing order…" : paymentMethod === "cod" ? "Place Order" : `Pay ${formatCurrency(total)}`}
           </MagneticButton>
           <p className="text-center text-xs text-obsidian/40">
             Demo checkout · no real payment processed
@@ -254,6 +306,12 @@ export default function CheckoutPage() {
             <span className="text-obsidian/50">Subtotal</span>
             <span>{formatCurrency(subtotal)}</span>
           </div>
+          {appliedDiscount && (
+            <div className="flex justify-between text-green-700">
+              <span>Discount ({discountCodeStr})</span>
+              <span>-{formatCurrency(subtotal - finalSubtotal)}</span>
+            </div>
+          )}
           <div className="flex justify-between">
             <span className="text-obsidian/50">Shipping</span>
             <span>{shipping === 0 ? "Complimentary" : formatCurrency(shipping)}</span>
