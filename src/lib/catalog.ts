@@ -85,9 +85,37 @@ export const CATEGORIES = [
     description: "Festive jumpsuits and occasion-ready silhouettes.",
     image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/product_31_0.png",
   },
+  {
+    slug: "accessories",
+    name: "Accessories",
+    description: "Bags, belts, and finishing touches.",
+    image: "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/placeholder.jpg",
+  },
 ] as const;
 
 export const PRODUCTS: CatalogProduct[] = [
+  {
+    slug: "cherry-red-roadster-sling-bag",
+    name: "Cherry Red Roadster Sling Bag",
+    shortDescription: "A stylish cherry red sling bag perfect for everyday essentials.",
+    description: "<p><span>Complete your look with this Cherry Red Roadster Sling Bag. Designed for both style and practicality, it holds all your essentials while adding a pop of color to any outfit.</span></p>\n<ul>\n<li><span>Brand: Roadster</span></li>\n<li><span>Color: Cherry Red</span></li>\n<li><span>Style: Sling Bag</span></li>\n</ul>",
+    categorySlug: "accessories",
+    price: 1199,
+    compareAtPrice: 1599,
+    material: "PU Leather",
+    careInstructions: "Wipe clean with a damp cloth.",
+    isTrending: true,
+    isFeatured: true,
+    rating: 5,
+    reviewCount: 3,
+    images: [
+      "https://zscukxpafikmszrqwodc.supabase.co/storage/v1/object/public/product-images/placeholder.jpg"
+    ],
+    tags: ["accessories", "bag", "sling", "red", "roadster"],
+    stock: 5,
+    sizes: ["Free Size"],
+    colors: [{ name: "Cherry Red", hex: "#B22222" }]
+  },
   {
     slug: "odette-pearl-embellished-graphic-t-shirt-blush-pink",
     name: "Odette Pearl Embellished Graphic T-Shirt – Blush Pink",

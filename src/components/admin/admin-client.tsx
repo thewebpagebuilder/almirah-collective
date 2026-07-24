@@ -179,7 +179,7 @@ export function AdminClient({
   const [customFrom, setCustomFrom] = useState("");
   const [customTo, setCustomTo] = useState("");
   const [showNewProduct, setShowNewProduct] = useState(false);
-  const [newProductForm, setNewProductForm] = useState({ name: "", description: "", price: "", categorySlug: "womens-wear", imageFile: null as File | null, stockBySize: { S: 0, L: 0, XL: 0, XXL: 0, "Free Size": 0 } });
+  const [newProductForm, setNewProductForm] = useState({ name: "", description: "", price: "", categorySlug: "womens-wear", imageFiles: [] as File[], stockBySize: { S: 0, L: 0, XL: 0, XXL: 0, "Free Size": 0 } });
 
   // ---- Financials: date-range filtering ----
   const { from, to } = useMemo(() => {
@@ -316,28 +316,47 @@ export function AdminClient({
     setMessage("Media removed");
     startTransition(() => router.refresh());
   }
+  async function resequenceImages(id: number, currentImages: string[], fromIndex: number, toIndex: number) {
+    if (fromIndex === toIndex) return;
+    setMessage("Re-sequencing images...");
+    const newImages = [...currentImages];
+    const [moved] = newImages.splice(fromIndex, 1);
+    newImages.splice(toIndex, 0, moved);
+    
+    const res = await fetch("/api/admin/inventory", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, images: newImages }),
+    });
+    if (!res.ok) return setMessage("Failed to re-sequence images");
+    setMessage("Images re-sequenced");
+    startTransition(() => router.refresh());
+  }
   
   async function createProduct(e: React.FormEvent) {
     e.preventDefault();
-    if (!newProductForm.imageFile) return setMessage("Please select an image");
+    if (newProductForm.imageFiles.length === 0) return setMessage("Please select at least one image");
     
-    setMessage("Uploading image...");
-    const formData = new FormData();
-    formData.append("file", newProductForm.imageFile);
-
+    setMessage("Uploading images...");
     try {
-      const uploadRes = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      if (!uploadRes.ok) return setMessage("Failed to upload image");
-      const { url } = await uploadRes.json();
+      const uploadedUrls: string[] = [];
+      for (const file of newProductForm.imageFiles) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const uploadRes = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+        });
+        if (!uploadRes.ok) throw new Error("Failed to upload image");
+        const { url } = await uploadRes.json();
+        uploadedUrls.push(url);
+      }
 
       setMessage("Creating product...");
       const res = await fetch("/api/admin/inventory", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newProductForm, image: url }),
+        body: JSON.stringify({ ...newProductForm, image: uploadedUrls[0], images: uploadedUrls }),
       });
       if (!res.ok) return setMessage("Failed to create product");
       
@@ -345,7 +364,7 @@ export function AdminClient({
       setShowNewProduct(false);
       startTransition(() => router.refresh());
     } catch (err) {
-      setMessage("An error occurred");
+      setMessage("An error occurred during upload or creation");
     }
   }
 
@@ -553,7 +572,7 @@ export function AdminClient({
                     <input required placeholder="Product Name" className="w-full bg-transparent border border-pearl/20 px-3 py-2" value={newProductForm.name} onChange={e => setNewProductForm({...newProductForm, name: e.target.value})} />
                     <textarea required placeholder="Description (Supports HTML for bullet points)" rows={4} className="w-full bg-transparent border border-pearl/20 px-3 py-2" value={newProductForm.description} onChange={e => setNewProductForm({...newProductForm, description: e.target.value})} />
                     <input required type="number" placeholder="Price (INR)" className="w-full bg-transparent border border-pearl/20 px-3 py-2" value={newProductForm.price} onChange={e => setNewProductForm({...newProductForm, price: e.target.value})} />
-                    <input required type="file" accept="image/*,video/*" className="w-full bg-transparent border border-pearl/20 px-3 py-2 text-pearl/50 file:mr-4 file:bg-champagne file:text-obsidian file:px-3 file:py-1 file:border-0 file:text-xs file:uppercase file:font-bold file:tracking-widest" onChange={e => setNewProductForm({...newProductForm, imageFile: e.target.files?.[0] || null})} />
+                    <input required type="file" multiple accept="image/*,video/*" className="w-full bg-transparent border border-pearl/20 px-3 py-2 text-pearl/50 file:mr-4 file:bg-champagne file:text-obsidian file:px-3 file:py-1 file:border-0 file:text-xs file:uppercase file:font-bold file:tracking-widest" onChange={e => setNewProductForm({...newProductForm, imageFiles: Array.from(e.target.files || [])})} />
                     
                     <select className="w-full bg-transparent border border-pearl/20 px-3 py-2" value={newProductForm.categorySlug} onChange={e => setNewProductForm({...newProductForm, categorySlug: e.target.value})}>
                       <option className="bg-obsidian" value="womens-wear">Women's Wear</option>
@@ -603,16 +622,27 @@ export function AdminClient({
                         <div className="mt-3">
                           <div className="mb-2 flex flex-wrap gap-1">
                             {(p.images || []).map((img, i) => (
-                              <div key={i} className="relative group overflow-hidden border border-pearl/20 w-12 h-12 flex-shrink-0">
+                              <div 
+                                key={i} 
+                                draggable
+                                onDragStart={(e) => e.dataTransfer.setData("text/plain", i.toString())}
+                                onDragOver={(e) => e.preventDefault()}
+                                onDrop={(e) => {
+                                  e.preventDefault();
+                                  const fromIndex = parseInt(e.dataTransfer.getData("text/plain"));
+                                  resequenceImages(p.id, p.images || [], fromIndex, i);
+                                }}
+                                className="relative group overflow-hidden border border-pearl/20 w-12 h-12 flex-shrink-0 cursor-move"
+                              >
                                 {img.endsWith(".mp4") || img.endsWith(".webm") || img.endsWith(".mov") ? (
-                                  <video src={img} className="w-full h-full object-cover" />
+                                  <video src={img} className="w-full h-full object-cover pointer-events-none" />
                                 ) : (
-                                  <img src={img} alt="" className="w-full h-full object-cover" />
+                                  <img src={img} alt="" className="w-full h-full object-cover pointer-events-none" />
                                 )}
                                 <button 
                                   title="Remove media"
                                   onClick={() => removeProductMedia(p.id, p.images || [], img)}
-                                  className="absolute inset-0 bg-red-900/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                                  className="absolute inset-0 bg-red-900/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs z-10"
                                 >
                                   ×
                                 </button>

@@ -146,9 +146,16 @@ export function ProductDetailClient({
 
         {/* Info */}
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <p className="text-[10px] uppercase tracking-[0.25em] text-obsidian/40">
-            {product.categorySlug.replace(/-/g, " ")}
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] uppercase tracking-[0.25em] text-obsidian/40">
+              {product.categorySlug.replace(/-/g, " ")}
+            </p>
+            {Number(product.stock) <= 0 && (
+              <span className="bg-red-500 text-white px-2 py-1 text-[10px] uppercase font-bold tracking-widest">
+                Sold Out
+              </span>
+            )}
+          </div>
           <h1 className="mt-2 font-serif text-3xl md:text-4xl lg:text-5xl leading-tight text-obsidian">
             {product.name}
           </h1>
@@ -298,6 +305,69 @@ export function ProductDetailClient({
                 )}
               </div>
             ))}
+          </div>
+
+          <div className="mt-16 max-w-xl border border-obsidian/10 p-6 bg-obsidian/[0.02]">
+            <h3 className="font-serif text-2xl text-obsidian mb-2">Write a review</h3>
+            <p className="text-sm text-obsidian/60 mb-6">Share your thoughts with other customers.</p>
+            
+            <form 
+              className="flex flex-col gap-4"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const formData = new FormData(form);
+                const data = {
+                  productId: product.id,
+                  customerName: formData.get("name"),
+                  rating: Number(formData.get("rating")),
+                  title: formData.get("title"),
+                  body: formData.get("body"),
+                };
+                
+                try {
+                  const res = await fetch("/api/reviews", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                  });
+                  if (res.ok) {
+                    alert("Thank you! Your review has been submitted for approval.");
+                    form.reset();
+                  } else {
+                    alert("Failed to submit review. Please try again.");
+                  }
+                } catch (err) {
+                  alert("An error occurred. Please try again.");
+                }
+              }}
+            >
+              <div>
+                <label className="block text-[11px] uppercase tracking-[0.15em] text-obsidian/70 mb-2">Rating</label>
+                <select name="rating" required className="w-full border border-obsidian/20 bg-transparent px-3 py-2 text-sm outline-none focus:border-obsidian">
+                  <option value="5">5 - Excellent</option>
+                  <option value="4">4 - Good</option>
+                  <option value="3">3 - Average</option>
+                  <option value="2">2 - Fair</option>
+                  <option value="1">1 - Poor</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[11px] uppercase tracking-[0.15em] text-obsidian/70 mb-2">Name</label>
+                <input name="name" required type="text" className="w-full border border-obsidian/20 bg-transparent px-3 py-2 text-sm outline-none focus:border-obsidian" />
+              </div>
+              <div>
+                <label className="block text-[11px] uppercase tracking-[0.15em] text-obsidian/70 mb-2">Review Title</label>
+                <input name="title" required type="text" className="w-full border border-obsidian/20 bg-transparent px-3 py-2 text-sm outline-none focus:border-obsidian" />
+              </div>
+              <div>
+                <label className="block text-[11px] uppercase tracking-[0.15em] text-obsidian/70 mb-2">Review</label>
+                <textarea name="body" required rows={4} className="w-full border border-obsidian/20 bg-transparent px-3 py-2 text-sm outline-none focus:border-obsidian"></textarea>
+              </div>
+              <button type="submit" className="bg-obsidian text-pearl px-6 py-3 text-[11px] uppercase font-bold tracking-widest mt-2 hover:bg-champagne hover:text-obsidian transition-colors">
+                Submit Review
+              </button>
+            </form>
           </div>
         </div>
       </div>

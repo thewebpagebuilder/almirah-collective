@@ -77,10 +77,10 @@ export default async function HomePage() {
         ];
 
   const heroSlides = [
-    { src: "/images/home/slide_1.jpg", alt: "Active Wear", category: "Active Wear" },
-    { src: "/images/home/slide_2.jpg", alt: "Women's Wear", category: "Women's Wear" },
-    { src: "/images/home/slide_3.jpg", alt: "Men's Wear", category: "Men's Wear" },
-    { src: "/images/home/slide_4.jpg", alt: "Accessories", category: "Accessories" }
+    { src: "/images/home/slide_1.jpg", alt: "Active Wear", category: "Active Wear", href: "/shop/active-wear" },
+    { src: "/images/home/slide_2.jpg", alt: "Women's Wear", category: "Women's Wear", href: "/shop/womens-wear" },
+    { src: "/images/home/slide_3.jpg", alt: "Men's Wear", category: "Men's Wear", href: "/shop/mens-wear" },
+    { src: "/images/home/slide_4.jpg", alt: "Accessories", category: "Accessories", href: "/shop/accessories" }
   ];
 
   const brandCount = BRAND.brandsCarried.length;
@@ -389,17 +389,14 @@ export default async function HomePage() {
             <p className="mt-3 text-sm text-obsidian/60">From our verified buyers across India</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { name: "Priya S.", text: "Absolutely in love with the quality. It's so rare to find genuine branded pieces in such perfect condition online. The packaging was lovely too!" },
-              { name: "Ananya M.", text: "My go-to place for curated fashion now. I bought a dress for a party and got so many compliments. Authentic and beautifully packed." },
-              { name: "Kavya R.", text: "Fast shipping and exactly as described. Love that I can trust Almirah Collective for authentic brands without the retail markup." }
-            ].map((review, i) => (
-              <div key={i} className="bg-pearl p-8 border border-obsidian/10 flex flex-col gap-4">
+            {approvedReviews.slice(0, 3).map((review) => (
+              <div key={review.id} className="bg-pearl p-8 border border-obsidian/10 flex flex-col gap-4">
                 <div className="flex gap-1 text-champagne-dark">
-                  {"★★★★★"}
+                  {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
                 </div>
-                <p className="text-sm leading-relaxed text-obsidian/75 italic">"{review.text}"</p>
-                <p className="text-xs font-bold uppercase tracking-wider mt-auto pt-4 border-t border-obsidian/5">{review.name}</p>
+                {review.title && <p className="font-serif text-lg font-semibold">{review.title}</p>}
+                <p className="text-sm leading-relaxed text-obsidian/75 italic">"{review.body}"</p>
+                <p className="text-xs font-bold uppercase tracking-wider mt-auto pt-4 border-t border-obsidian/5">{review.customerName}</p>
               </div>
             ))}
           </div>

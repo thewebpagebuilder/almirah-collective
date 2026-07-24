@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export type SlideData = {
   src: string;
   alt: string;
   category: string;
+  href?: string;
 };
 
 type Props = {
@@ -50,19 +52,37 @@ export function HeroSlideshow({ slides }: Props) {
             index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
           )}
         >
-          <Image
-            src={slide.src}
-            alt={slide.alt}
-            fill
-            className={cn(
-              "object-cover object-center",
-              // applying 7s zoom duration
-              "transition-transform duration-[7000ms] ease-out",
-              index === currentIndex ? "scale-105" : "scale-100"
-            )}
-            sizes="(max-width: 768px) 100vw, 50vw"
-            priority={index === 0}
-          />
+          {slide.href ? (
+            <Link href={slide.href} className="block w-full h-full">
+              <Image
+                src={slide.src}
+                alt={slide.alt}
+                fill
+                className={cn(
+                  "object-cover object-center",
+                  // applying 7s zoom duration
+                  "transition-transform duration-[7000ms] ease-out",
+                  index === currentIndex ? "scale-105" : "scale-100"
+                )}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority={index === 0}
+              />
+            </Link>
+          ) : (
+            <Image
+              src={slide.src}
+              alt={slide.alt}
+              fill
+              className={cn(
+                "object-cover object-center",
+                // applying 7s zoom duration
+                "transition-transform duration-[7000ms] ease-out",
+                index === currentIndex ? "scale-105" : "scale-100"
+              )}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority={index === 0}
+            />
+          )}
         </div>
       ))}
 
