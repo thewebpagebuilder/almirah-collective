@@ -103,6 +103,7 @@ export function Header() {
                         { slug: "casual-bottom-wear", name: "Casual Bottom Wear", desc: "Comfortable and chic lower wear." },
                         { slug: "party-wear", name: "Party Wear", desc: "Statement pieces for evening glamour." },
                         { slug: "active-wear", name: "Active-Wear", desc: "Performance wear meeting high fashion." },
+                        { slug: "accessories", name: "Accessories", desc: "Finishing touches to elevate your look." },
                       ].map((cat) => (
                         <Link key={cat.slug} href={`/shop/${cat.slug}`} className="group block py-2">
                           <p className="font-serif text-[15px] text-obsidian group-hover:text-champagne-dark transition-colors">

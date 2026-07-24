@@ -37,13 +37,13 @@ export default async function HomePage() {
     db
       .select()
       .from(products)
-      .where(and(eq(products.isFeatured, true), sql`products.stock > 0`))
+      .where(eq(products.isFeatured, true))
       .orderBy(desc(products.rating))
       .limit(8),
     db
       .select()
       .from(products)
-      .where(and(eq(products.isTrending, true), sql`products.stock > 0`))
+      .where(eq(products.isTrending, true))
       .orderBy(desc(products.reviewCount))
       .limit(8),
     db.select().from(pressMentions).orderBy(pressMentions.sortOrder),
