@@ -180,6 +180,11 @@ export function AdminClient({
   const [customTo, setCustomTo] = useState("");
   const [showNewProduct, setShowNewProduct] = useState(false);
   const [newProductForm, setNewProductForm] = useState({ name: "", description: "", price: "", categorySlug: "womens-wear", imageFiles: [] as File[], stockBySize: { S: 0, L: 0, XL: 0, XXL: 0, "Free Size": 0 } });
+  
+  // Inventory UX state
+  const [editedProducts, setEditedProducts] = useState<Record<number, any>>({});
+  const [inventorySearch, setInventorySearch] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   // ---- Financials: date-range filtering ----
   const { from, to } = useMemo(() => {
@@ -249,88 +254,98 @@ export function AdminClient({
     startTransition(() => router.refresh());
   }
 
-  async function updateProductPricing(id: number, price: string, compareAtPrice: string) {
-    setMessage("");
-    const res = await fetch("/api/admin/inventory", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, price, compareAtPrice }),
+  function updateProductDraft(id: number, data: any) {
+    setEditedProducts(prev => {
+      const existing = prev[id] || {};
+      return { ...prev, [id]: { ...existing, ...data } };
     });
-    if (!res.ok) return setMessage("Failed to update pricing");
-    setMessage("Pricing updated");
-    startTransition(() => router.refresh());
   }
 
-  async function updateStockBySize(id: number, currentStock: Record<string, number>, size: string, change: number) {
-    setMessage("");
-    const newStock = { ...currentStock, [size]: Math.max(0, (currentStock[size] || 0) + change) };
-    const res = await fetch("/api/admin/inventory", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, stockBySize: newStock }),
-    });
-    if (!res.ok) return setMessage("Failed to update stock");
-    setMessage("Inventory updated");
-    startTransition(() => router.refresh());
+  function updateProductPricing(id: number, price: string, compareAtPrice: string) {
+    updateProductDraft(id, { price, compareAtPrice });
+  }
+
+  function updateStockBySize(id: number, currentStock: Record<string, number>, size: string, newStr: string) {
+    const val = parseInt(newStr) || 0;
+    const draftedStock = editedProducts[id]?.stockBySize || currentStock;
+    const newStock = { ...draftedStock, [size]: val };
+    
+    // Calculate total stock
+    const totalStock = Object.values(newStock).reduce((a, b) => Number(a) + Number(b), 0);
+    
+    updateProductDraft(id, { stockBySize: newStock, stock: totalStock });
   }
 
   async function uploadProductImage(id: number, currentImages: string[], e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setMessage("Uploading image...");
-    const formData = new FormData();
-    formData.append("file", file);
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    
+    setMessage("Uploading images...");
+    const uploadedUrls: string[] = [];
     try {
-      const uploadRes = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      if (!uploadRes.ok) return setMessage("Failed to upload image");
-      const { url } = await uploadRes.json();
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const uploadRes = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+        });
+        if (!uploadRes.ok) throw new Error("Failed");
+        const { url } = await uploadRes.json();
+        uploadedUrls.push(url);
+      }
       
-      const newImages = [url, ...currentImages];
-      const res = await fetch("/api/admin/inventory", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, images: newImages }),
-      });
-      if (!res.ok) return setMessage("Failed to update product images");
-      
-      setMessage("Image updated successfully");
-      startTransition(() => router.refresh());
+      const draftedImages = editedProducts[id]?.images || currentImages;
+      const newImages = [...uploadedUrls, ...draftedImages];
+      updateProductDraft(id, { images: newImages });
+      setMessage("Images uploaded");
     } catch (err) {
       setMessage("An error occurred during upload");
     }
   }
 
-  async function removeProductMedia(id: number, currentImages: string[], urlToRemove: string) {
-    if (!confirm("Remove this media file?")) return;
-    setMessage("Removing media...");
-    const newImages = currentImages.filter(u => u !== urlToRemove);
-    const res = await fetch("/api/admin/inventory", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, images: newImages }),
-    });
-    if (!res.ok) return setMessage("Failed to remove media");
-    setMessage("Media removed");
-    startTransition(() => router.refresh());
+  function removeProductMedia(id: number, currentImages: string[], urlToRemove: string) {
+    const draftedImages = editedProducts[id]?.images || currentImages;
+    const newImages = draftedImages.filter((u: string) => u !== urlToRemove);
+    updateProductDraft(id, { images: newImages });
   }
-  async function resequenceImages(id: number, currentImages: string[], fromIndex: number, toIndex: number) {
+
+  function resequenceImages(id: number, currentImages: string[], fromIndex: number, toIndex: number) {
     if (fromIndex === toIndex) return;
-    setMessage("Re-sequencing images...");
-    const newImages = [...currentImages];
+    const draftedImages = editedProducts[id]?.images || currentImages;
+    const newImages = [...draftedImages];
     const [moved] = newImages.splice(fromIndex, 1);
     newImages.splice(toIndex, 0, moved);
+    updateProductDraft(id, { images: newImages });
+  }
+  
+  async function handleBulkSave() {
+    const updates = Object.entries(editedProducts).map(([idStr, data]) => ({
+      id: parseInt(idStr),
+      ...data
+    }));
     
-    const res = await fetch("/api/admin/inventory", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, images: newImages }),
-    });
-    if (!res.ok) return setMessage("Failed to re-sequence images");
-    setMessage("Images re-sequenced");
-    startTransition(() => router.refresh());
+    if (updates.length === 0) return;
+    
+    setIsSaving(true);
+    setMessage("Saving inventory changes...");
+    
+    try {
+      const res = await fetch("/api/admin/inventory/bulk", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ updates }),
+      });
+      if (!res.ok) throw new Error("Failed to bulk save");
+      
+      setMessage("Inventory saved successfully!");
+      setEditedProducts({});
+      startTransition(() => router.refresh());
+    } catch (err) {
+      setMessage("An error occurred while saving");
+    } finally {
+      setIsSaving(false);
+    }
   }
   
   async function createProduct(e: React.FormEvent) {
@@ -604,9 +619,31 @@ export function AdminClient({
               </div>
             )}
 
-            <div className="mt-6 overflow-x-auto border border-pearl/10">
-              <table className="w-full min-w-[850px] text-left text-sm">
-                <thead className="bg-pearl/5 text-[10px] uppercase tracking-[0.15em] text-pearl/45">
+            <div className="mb-4 flex items-center justify-between">
+              <input
+                type="text"
+                placeholder="Search products..."
+                className="w-full max-w-xs bg-transparent border border-pearl/20 px-3 py-1.5 text-sm outline-none focus:border-champagne text-pearl"
+                value={inventorySearch}
+                onChange={(e) => setInventorySearch(e.target.value)}
+              />
+              <button
+                onClick={handleBulkSave}
+                disabled={isSaving || Object.keys(editedProducts).length === 0}
+                className="bg-champagne text-obsidian px-4 py-2 text-[10px] font-bold uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {isSaving ? "Saving..." : "Save Changes"}
+                {Object.keys(editedProducts).length > 0 && (
+                  <span className="bg-obsidian text-champagne px-1.5 py-0.5 rounded-full text-[9px]">
+                    {Object.keys(editedProducts).length}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            <div className="mt-6 overflow-x-auto border border-pearl/10 max-h-[75vh]">
+              <table className="w-full min-w-[850px] text-left text-sm relative">
+                <thead className="bg-obsidian/95 text-[10px] uppercase tracking-[0.15em] text-pearl/45 sticky top-0 z-20 backdrop-blur-sm shadow-sm shadow-pearl/10">
                   <tr>
                     <th className="px-4 py-3">Product</th>
                     <th className="px-4 py-3">Category / Price</th>
@@ -615,13 +652,19 @@ export function AdminClient({
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((p) => (
-                    <tr key={p.id} className="border-t border-pearl/8">
+                  {products.filter(p => p.name.toLowerCase().includes(inventorySearch.toLowerCase())).map((p) => {
+                    const currentImages = editedProducts[p.id]?.images || p.images || [];
+                    const currentPrice = editedProducts[p.id]?.price !== undefined ? editedProducts[p.id].price : p.price;
+                    const currentCompareAtPrice = editedProducts[p.id]?.compareAtPrice !== undefined ? editedProducts[p.id].compareAtPrice : p.compareAtPrice || "";
+                    const currentStock = editedProducts[p.id]?.stockBySize || p.stockBySize || {};
+                    
+                    return (
+                    <tr key={p.id} className="border-t border-pearl/8 hover:bg-pearl/[0.02] transition-colors">
                       <td className="px-4 py-3 align-top max-w-[200px]">
-                        <p className="line-clamp-2">{p.name}</p>
+                        <p className="line-clamp-2 font-medium">{p.name}</p>
                         <div className="mt-3">
                           <div className="mb-2 flex flex-wrap gap-1">
-                            {(p.images || []).map((img, i) => (
+                            {currentImages.map((img: string, i: number) => (
                               <div 
                                 key={i} 
                                 draggable
@@ -641,7 +684,7 @@ export function AdminClient({
                                 )}
                                 <button 
                                   title="Remove media"
-                                  onClick={() => removeProductMedia(p.id, p.images || [], img)}
+                                  onClick={() => removeProductMedia(p.id, currentImages, img)}
                                   className="absolute inset-0 bg-red-900/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs z-10"
                                 >
                                   ×
@@ -651,7 +694,7 @@ export function AdminClient({
                           </div>
                           <label className="cursor-pointer border border-pearl/20 px-2 py-1 text-[9px] uppercase tracking-widest text-pearl/50 hover:bg-pearl/5">
                             Upload Media
-                            <input type="file" accept="image/*,video/*" className="hidden" onChange={(e) => uploadProductImage(p.id, p.images || [], e)} />
+                            <input type="file" multiple accept="image/*,video/*" className="hidden" onChange={(e) => uploadProductImage(p.id, currentImages, e)} />
                           </label>
                         </div>
                       </td>
@@ -660,26 +703,28 @@ export function AdminClient({
                         <div className="mt-3 space-y-1.5 w-32">
                           <label className="flex items-center justify-between gap-2">
                             <span className="text-[9px] uppercase tracking-widest text-champagne">Sell</span>
-                            <input type="number" defaultValue={p.price} onBlur={(e) => updateProductPricing(p.id, e.target.value, p.compareAtPrice || "")} className="w-16 bg-transparent border border-pearl/20 px-1 py-0.5 text-pearl text-right text-xs" />
+                            <input type="number" value={currentPrice} onChange={(e) => updateProductPricing(p.id, e.target.value, currentCompareAtPrice.toString())} className="w-16 bg-transparent border border-pearl/20 px-1 py-0.5 text-pearl text-right text-xs outline-none focus:border-champagne transition-colors" />
                           </label>
                           <label className="flex items-center justify-between gap-2">
                             <span className="text-[9px] uppercase tracking-widest text-pearl/40">MRP</span>
-                            <input type="number" defaultValue={p.compareAtPrice || ""} placeholder="-" onBlur={(e) => updateProductPricing(p.id, p.price, e.target.value)} className="w-16 bg-transparent border border-pearl/20 px-1 py-0.5 text-pearl/50 text-right text-xs line-through" />
+                            <input type="number" value={currentCompareAtPrice} placeholder="-" onChange={(e) => updateProductPricing(p.id, currentPrice.toString(), e.target.value)} className="w-16 bg-transparent border border-pearl/20 px-1 py-0.5 text-pearl/50 text-right text-xs outline-none focus:border-champagne transition-colors line-through" />
                           </label>
                         </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           {["S", "L", "XL", "XXL", "Free Size"].map(size => {
-                            const val = p.stockBySize?.[size] || 0;
+                            const val = currentStock[size] || 0;
                             return (
                               <div key={size} className="flex items-center justify-between border border-pearl/15 p-1 bg-pearl/[0.02]">
                                 <span className="text-pearl/60 w-12 truncate">{size}</span>
-                                <span className={cn("font-mono w-6 text-center", val === 0 ? "text-red-400" : "text-champagne")}>{val}</span>
-                                <div className="flex gap-1">
-                                  <button onClick={() => updateStockBySize(p.id, p.stockBySize, size, -1)} className="px-1.5 bg-pearl/10 hover:bg-pearl/20">−</button>
-                                  <button onClick={() => updateStockBySize(p.id, p.stockBySize, size, 1)} className="px-1.5 bg-pearl/10 hover:bg-pearl/20">+</button>
-                                </div>
+                                <input 
+                                  type="number" 
+                                  min="0"
+                                  value={val}
+                                  onChange={(e) => updateStockBySize(p.id, currentStock, size, e.target.value)}
+                                  className={cn("w-12 bg-transparent text-right outline-none font-mono border-b border-transparent focus:border-champagne transition-colors", val === 0 ? "text-red-400" : "text-champagne")}
+                                />
                               </div>
                             )
                           })}
@@ -691,7 +736,7 @@ export function AdminClient({
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  )})}
                 </tbody>
               </table>
             </div>
