@@ -18,18 +18,46 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPayment, setShowPayment] = useState(false);
+  const [fetchingPincode, setFetchingPincode] = useState(false);
   const [pendingOrder, setPendingOrder] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod">("razorpay");
   const [form, setForm] = useState({
     name: user?.user_metadata?.full_name || "",
     email: user?.email || "",
+    phoneCode: "+91",
     phone: "",
     line1: "",
     line2: "",
     city: "",
     state: "",
     postalCode: "",
+    country: "India",
   });
+
+  async function handlePincodeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = e.target.value;
+    setForm({ ...form, postalCode: val });
+    
+    if (val.length === 6 && /^\d+$/.test(val)) {
+      setFetchingPincode(true);
+      try {
+        const res = await fetch(`https://api.postalpincode.in/pincode/${val}`);
+        const data = await res.json();
+        if (data && data[0] && data[0].Status === "Success") {
+          const postOffice = data[0].PostOffice[0];
+          setForm(prev => ({
+            ...prev,
+            city: postOffice.District,
+            state: postOffice.State
+          }));
+        }
+      } catch (err) {
+        // ignore errors and let user type manually
+      } finally {
+        setFetchingPincode(false);
+      }
+    }
+  }
 
   useEffect(() => {
     if (authLoading) return;
@@ -60,7 +88,7 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           name: form.name,
           email: form.email,
-          phone: form.phone,
+          phone: `${form.phoneCode}${form.phone}`,
           items: items.map((i) => ({
             productId: i.productId,
             quantity: i.quantity,
@@ -73,7 +101,7 @@ export default function CheckoutPage() {
             city: form.city,
             state: form.state,
             postalCode: form.postalCode,
-            country: "India",
+            country: form.country,
           },
           discountCode: appliedDiscount ? discountCodeStr : undefined,
         }),
@@ -165,20 +193,59 @@ export default function CheckoutPage() {
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
-            <input
-              placeholder="Phone"
-              className="w-full border border-obsidian/15 bg-transparent px-4 py-3 text-sm outline-none focus:border-champagne"
-              pattern="[6-9]\d{9}"
-              title="10 digit Indian mobile number"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            />
+            <div className="flex w-full border border-obsidian/15 bg-transparent focus-within:border-champagne">
+              <select 
+                className="bg-transparent px-3 py-3 text-sm outline-none border-r border-obsidian/15 text-obsidian/80 appearance-none cursor-pointer"
+                value={form.phoneCode}
+                onChange={(e) => setForm({ ...form, phoneCode: e.target.value })}
+              >
+                <option value="+91">🇮🇳 +91</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+61">🇦🇺 +61</option>
+                <option value="+971">🇦🇪 +971</option>
+              </select>
+              <input
+                placeholder="Phone"
+                className="w-full bg-transparent px-4 py-3 text-sm outline-none"
+                pattern="\d{7,15}"
+                title="Valid phone number"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              />
+            </div>
           </fieldset>
 
           <fieldset className="space-y-4">
             <legend className="text-[11px] uppercase tracking-[0.2em] text-obsidian/50">
               Shipping address
             </legend>
+            <div className="w-full relative">
+              <select
+                required
+                className="w-full border border-obsidian/15 bg-transparent px-4 py-3 text-sm outline-none focus:border-champagne appearance-none cursor-pointer"
+                value={form.country}
+                onChange={(e) => setForm({ ...form, country: e.target.value })}
+              >
+                <option value="India">India</option>
+                <option value="United States">United States</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Australia">Australia</option>
+                <option value="United Arab Emirates">United Arab Emirates</option>
+              </select>
+            </div>
+            <div className="relative">
+              <input
+                required
+                placeholder="Postal code / Pincode"
+                className="w-full border border-obsidian/15 bg-transparent px-4 py-3 text-sm outline-none focus:border-champagne"
+                value={form.postalCode}
+                onChange={handlePincodeChange}
+              />
+              {fetchingPincode && (
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 border-2 border-obsidian/20 border-t-obsidian rounded-full animate-spin" />
+              )}
+            </div>
             <input
               required
               placeholder="Address line 1"
@@ -208,13 +275,6 @@ export default function CheckoutPage() {
                 onChange={(e) => setForm({ ...form, state: e.target.value })}
               />
             </div>
-            <input
-              required
-              placeholder="Postal code"
-              className="w-full border border-obsidian/15 bg-transparent px-4 py-3 text-sm outline-none focus:border-champagne"
-              value={form.postalCode}
-              onChange={(e) => setForm({ ...form, postalCode: e.target.value })}
-            />
           </fieldset>
 
           <fieldset className="space-y-4">

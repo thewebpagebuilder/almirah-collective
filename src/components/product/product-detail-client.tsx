@@ -116,6 +116,7 @@ export function ProductDetailClient({
               alt={product.name}
               fill
               priority
+              unoptimized
               sizes="(max-width:1024px) 100vw, 50vw"
               className={cn(
                 "object-cover transition duration-500",
@@ -138,7 +139,7 @@ export function ProductDetailClient({
                     : "border-transparent opacity-70",
                 )}
               >
-                <Image src={img} alt="" fill className="object-cover" sizes="64px" />
+                <Image src={img} alt="" fill unoptimized className="object-cover" sizes="64px" />
               </button>
             ))}
           </div>

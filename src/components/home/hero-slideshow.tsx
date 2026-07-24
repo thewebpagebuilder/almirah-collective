@@ -58,6 +58,7 @@ export function HeroSlideshow({ slides }: Props) {
                 src={slide.src}
                 alt={slide.alt}
                 fill
+                unoptimized
                 className={cn(
                   "object-cover object-center",
                   // applying 7s zoom duration
@@ -73,6 +74,7 @@ export function HeroSlideshow({ slides }: Props) {
               src={slide.src}
               alt={slide.alt}
               fill
+              unoptimized
               className={cn(
                 "object-cover object-center",
                 // applying 7s zoom duration
