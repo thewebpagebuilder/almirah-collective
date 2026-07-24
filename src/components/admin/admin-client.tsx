@@ -184,6 +184,8 @@ export function AdminClient({
   // Inventory UX state
   const [editedProducts, setEditedProducts] = useState<Record<number, any>>({});
   const [inventorySearch, setInventorySearch] = useState("");
+  const [inventoryPage, setInventoryPage] = useState(1);
+  const ITEMS_PER_PAGE = 20;
   const [isSaving, setIsSaving] = useState(false);
 
   // ---- Financials: date-range filtering ----
@@ -625,7 +627,10 @@ export function AdminClient({
                 placeholder="Search products..."
                 className="w-full max-w-xs bg-transparent border border-pearl/20 px-3 py-1.5 text-sm outline-none focus:border-champagne text-pearl"
                 value={inventorySearch}
-                onChange={(e) => setInventorySearch(e.target.value)}
+                onChange={(e) => {
+                  setInventorySearch(e.target.value);
+                  setInventoryPage(1);
+                }}
               />
               <button
                 onClick={handleBulkSave}
@@ -652,7 +657,9 @@ export function AdminClient({
                   </tr>
                 </thead>
                 <tbody>
-                  {products.filter(p => p.name.toLowerCase().includes(inventorySearch.toLowerCase())).map((p) => {
+                  {products.filter(p => p.name.toLowerCase().includes(inventorySearch.toLowerCase()))
+                    .slice((inventoryPage - 1) * ITEMS_PER_PAGE, inventoryPage * ITEMS_PER_PAGE)
+                    .map((p) => {
                     const currentImages = editedProducts[p.id]?.images || p.images || [];
                     const currentPrice = editedProducts[p.id]?.price !== undefined ? editedProducts[p.id].price : p.price;
                     const currentCompareAtPrice = editedProducts[p.id]?.compareAtPrice !== undefined ? editedProducts[p.id].compareAtPrice : p.compareAtPrice || "";
@@ -740,6 +747,37 @@ export function AdminClient({
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination Controls */}
+            {(() => {
+              const totalItems = products.filter(p => p.name.toLowerCase().includes(inventorySearch.toLowerCase())).length;
+              const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+              if (totalPages <= 1) return null;
+              
+              return (
+                <div className="mt-4 flex items-center justify-between text-[11px] text-pearl/60">
+                  <span>Showing {(inventoryPage - 1) * ITEMS_PER_PAGE + 1} to {Math.min(inventoryPage * ITEMS_PER_PAGE, totalItems)} of {totalItems} products</span>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => setInventoryPage(p => Math.max(1, p - 1))}
+                      disabled={inventoryPage === 1}
+                      className="px-3 py-1.5 border border-pearl/20 hover:border-champagne disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Previous
+                    </button>
+                    <span className="px-2">Page {inventoryPage} of {totalPages}</span>
+                    <button 
+                      onClick={() => setInventoryPage(p => Math.min(totalPages, p + 1))}
+                      disabled={inventoryPage === totalPages}
+                      className="px-3 py-1.5 border border-pearl/20 hover:border-champagne disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
+
           </div>
         )}
 
